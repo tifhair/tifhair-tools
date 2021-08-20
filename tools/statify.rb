@@ -4,7 +4,7 @@ require "json"
 require "slim"
 require "sqlite3"
 
-blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%") ORDER BY RANDOM()'
+$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%") ORDER BY RANDOM()'
 
 def usage
   puts "run statify.rb <source_dir> <dest_dir>"
@@ -83,9 +83,42 @@ def copy_dir(source, dest)
   FileUtils.cp_r(source, dest, verbose:true)
 end
 
-make_json(File.join(source_dir, "coiffeurs.sqlite"), dest_dir, blague)
+def get_coiffeurs_by_dept(db_file, dept)
+  d = dept
+  if d == "2A"
+    d = "20"
+  end
+  if d== "2B"
+    d = "20"
+  end
+  db = SQLite3::Database.open(db_file)
+  res = db.execute("SELECT count(*) FROM Coiffeurs WHERE codepostal LIKE ? AND #{$blague}", d+"%")
+  blagueurs =  res[0][0]
+  res = db.execute("SELECT count(*) FROM Coiffeurs WHERE codepostal LIKE ?", d+"%")
+  tous  =  res[0][0]
+  percent = 100.0 * blagueurs / tous 
+  return percent
+end
+
+
+def make_dept_geojson(db_file, source, dest)
+  j = JSON.parse(File.read(source))
+  j["features"].each do |f|
+    code = f["properties"]["code"]
+    percent = get_coiffeurs_by_dept(db_file, code)
+    f["properties"]["blagueurs"] = "%0.2f%%" % percent
+  end
+  File.open(dest, 'w') do |f|
+    f.write(j.to_json)
+  end
+  puts "written #{dest}"
+end
+db_file = File.join(source_dir, "coiffeurs.sqlite")
+make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
+make_json(db_file, dest_dir, $blague)
 slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
 slimify(File.join(source_dir, "infos.slim"), File.join(dest_dir, "infos.html"))
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
 copy_dir(File.join(source_dir, 'js'), dest_dir)
 copy_dir(File.join(source_dir, 'pics'), dest_dir)
+copy_dir(File.join(source_dir, 'geojson'), dest_dir)

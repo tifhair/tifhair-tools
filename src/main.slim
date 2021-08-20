@@ -20,27 +20,32 @@ html lang="fr"
     div class="container"
       h1
         | Les coiffeurs sont des blagueurs
-      div class="filters"
-        label
-          | Filter par Nom:
-          input class="filter" id="filter_name" type="text" placeholder="Établissement"
-        label
-          | Filter par Departement:
-          select id="filter_dept" class="filter"
-            option value="*" selected="selected"
-                | *
-            - for i in ('01'..'95')
-              option value="#{i}"
-                | #{i}
-            option value="97"
-                | 97
-        label
-          | Filter par Ville:
-          input class="filter" id="filter_ville" type="text" placeholder="Ville"
-      div id="mapid"
-      ul id="listecoiffeurs" title="Cliquez pour zoomer!"
-      section
-        | More infos
+      section id="globalmap"
+        h2
+          | Carte globale
+        div class="filters"
+          label
+            | Filter par Nom:
+            input class="filter" id="filter_name" type="text" placeholder="Établissement"
+          label
+            | Filter par Departement:
+            select id="filter_dept" class="filter"
+              option value="*" selected="selected"
+                  | *
+              - for i in ('01'..'95')
+                option value="#{i}"
+                  | #{i}
+              option value="97"
+                  | 97
+          label
+            | Filter par Ville:
+            input class="filter" id="filter_ville" type="text" placeholder="Ville"
+        div id="mapid"
+        ul id="listecoiffeurs" title="Cliquez pour zoomer!"
+      section id="dmap"
+        h2
+          | Stats par département
+        div id="deptmap"
 
     script src="/js/coiffeurs.js"
 

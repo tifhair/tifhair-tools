@@ -1,14 +1,28 @@
 html {
     font-family: 'Fira Sans', sans-serif;
 }
+label {
+    margin: 5px;
+}
 
+select {
+    margin: 5px;
+}
+/*
 .container > * {
     border: 1px solid green; 
 }
 
+section > * {
+    border: 1px solid red; 
+}
+*/
+
 div.container {
     width: 80vw;
-    height: 80vh;
+    margin: 10px auto;
+}
+section#globalmap {
     display: grid;
     margin: 0 auto;
     grid-auto-columns: 2fr 1fr;
@@ -16,11 +30,31 @@ div.container {
     grid-gap: 1rem;
 }
 
-h1 {
+section#globalmap h2 {
     grid-column: span 2;
+}
+
+section#globalmap div.filters {
+    grid-column: span 2;
+}
+
+section#dmap {
+    display: grid;
+    margin: 0 auto;
+    grid-auto-columns: 1fr;
+    grid-template-rows: 50px calc(100vh - 30px);
+    grid-gap: 1rem;
+}
+
+h1 {
     font-size: 2rem;
     font-weight: bold;
     text-transform: uppercase;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 input[type=text] {
@@ -37,22 +71,9 @@ input[type=text] {
     padding: 1rem;
 }
 
-label {
-    margin: 5px;
-}
-
-select {
-    margin: 5px;
-}
-
-div.filters {
-    grid-column: span 2;
-}
-
 ul#listecoiffeurs {
     overflow: scroll;
 }
-
 
 a.button {
     -webkit-appearance: button;
@@ -65,3 +86,29 @@ a.button {
     text-align: center;
     padding: 5px;
     display: inline-block;
+}
+
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.info {
+    padding: 6px 8px;
+    font: 16px/18px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}

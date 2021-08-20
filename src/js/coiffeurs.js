@@ -1,4 +1,5 @@
 var map = L.map('mapid').setView([48.50, 2.29], 4);
+var deptmap = L.map('deptmap').setView([48.50, 2.29], 6);
 
 var getJSON = function(url, callback) {
     var xhr = new XMLHttpRequest();
@@ -14,6 +15,63 @@ var getJSON = function(url, callback) {
     };
     xhr.send();
 };
+
+function getDeptColor(blag) {
+    if (blag < 4)
+        return "#fff7ec";
+    if (blag < 5)
+        return "#fee8c8";
+    if (blag < 6)
+        return "#fdd49e";
+    if (blag < 7)
+        return "#fdbb84";
+    if (blag < 8)
+        return "#fc8d59";
+    if (blag < 9)
+        return "#ef6548";
+    if (blag < 10)
+        return "#d7301f";
+    return "#990000";
+}
+
+function showDeptGeoJSON(data) {
+    L.geoJSON(data, {
+        onEachFeature: function (feature, layer) {
+            var htmll = "<p>"+feature.properties.nom+": "+feature.properties.blagueurs+" de blagues";
+            layer.bindPopup(htmll);
+        },
+        style: function(feature) {
+            var blag = parseFloat(feature.properties.blagueurs);
+            return {
+                fillColor: getDeptColor(blag),
+                weight: 2,
+                color: "#EEEEEE",
+                fillOpacity: 0.7
+            };
+
+        }
+    }).addTo(deptmap);
+
+    var legend = L.control({position: 'bottomright'});
+
+	legend.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'info legend'),
+			grades = [3, 4, 5, 6, 7, 8, 9, 10];
+			labels = [];
+
+		div.innerHTML+="<p>Pourcentage de blagueurs</p>"
+		// loop through our density intervals and generate a label with a colored square for each interval
+		for (var i = 0; i < grades.length; i++) {
+			div.innerHTML +=
+				'<i style="background:' + getDeptColor(grades[i] + 1) + '"></i> ' +
+				grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+		}
+		return div;
+	};
+
+	legend.addTo(deptmap);
+}
+
 
 function showCoiffeursGeoJSON(data) {
     var filter_name = document.getElementById('filter_name').value;
@@ -107,6 +165,7 @@ function showCoiffeursGeoJSON(data) {
 };
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(deptmap);
 
 var coiffeurs_json; 
 getJSON("/coiffeurs.json", function(err, data) {
@@ -118,4 +177,14 @@ getJSON("/coiffeurs.json", function(err, data) {
     }
 });
 
+getJSON("/departements.geojson", function(err, data) {
+    if (err !== null) {
+        console.log('Something went wrong: ' + err);
+    } else {
+        showDeptGeoJSON(data);
+    }
+});
+
+
 Array.from(document.getElementsByClassName("filter")).forEach(input => input.addEventListener('input', function(e){showCoiffeursGeoJSON(coiffeurs_json)}));
+
