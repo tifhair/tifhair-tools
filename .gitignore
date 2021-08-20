@@ -1,0 +1,4 @@
+*.swp
+*.sqlite
+.api_key
+build

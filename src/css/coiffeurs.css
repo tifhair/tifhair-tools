@@ -1,0 +1,54 @@
+html {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.container > * {
+    border: 1px solid green; 
+}
+
+div.container {
+    width: 80vw;
+    height: 80vh;
+    display: grid;
+    margin: 0 auto;
+    grid-auto-columns: 2fr 1fr;
+    grid-template-rows: 50px 30px calc(100vh - 30px);
+    grid-gap: 1rem;
+}
+
+h1 {
+    grid-column: span 2;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+input[type=text] {
+    margin: 5px;
+}
+
+#mapid {
+    background: #fee;
+}
+
+#listecoiffeurs {
+    background: #efe;
+    letter-spacing: 0.03em;
+    padding: 1rem;
+}
+
+label {
+    margin: 5px;
+}
+
+select {
+    margin: 5px;
+}
+
+div.filters {
+    grid-column: span 2;
+}
+
+ul#listecoiffeurs {
+    overflow: scroll;
+}
