@@ -52,3 +52,16 @@ div.filters {
 ul#listecoiffeurs {
     overflow: scroll;
 }
+
+
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    text-decoration: none;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    display: inline-block;

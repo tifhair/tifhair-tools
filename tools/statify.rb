@@ -48,7 +48,7 @@ def make_json(db_file, dest_dir, filter)
         "voie"=> voie,
         "ville" => ville,
         "codepostal" => codepostal,
-        "markerinnerhtml" => "<p>#{nom}</p><a target='_blank' href='https://maps.google.com/?q=#{URI.encode_www_form_component(nom)} #{addresse}'>#{addresse}</a>",
+        "markerinnerhtml" => make_marker_html(nom, addresse),
         "liinnerhtml" => "<b>#{nom}</b>, #{ville} (#{codepostal})",
         "addresse"=> addresse
       },
@@ -63,6 +63,12 @@ def make_json(db_file, dest_dir, filter)
     f.write(res.to_json)
   end
   puts "Written #{json_path}"
+end
+
+def make_marker_html(nom, addresse)
+  n = URI.encode_www_form_component(nom)
+  a = URI.encode_www_form_component(addresse)
+  return "<p><b>#{nom}</b></p><p><a class='button' target='_blank' href='https://maps.google.com/?q=#{n} #{a}'>Ouvrir dans Google Maps</a></p>"
 end
 
 def slimify(slim_template, dest)
@@ -82,3 +88,4 @@ slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
 slimify(File.join(source_dir, "infos.slim"), File.join(dest_dir, "infos.html"))
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
 copy_dir(File.join(source_dir, 'js'), dest_dir)
+copy_dir(File.join(source_dir, 'pics'), dest_dir)
