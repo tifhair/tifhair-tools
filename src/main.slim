@@ -13,11 +13,14 @@ html lang="fr"
     link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"
     link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"
     link rel="stylesheet" href="/css/coiffeurs.css"
+    link rel="stylesheet" href="/css/menu.css"
     script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""
     script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"
 
   body
     div class="container"
+      include menu.slim
+
       h1
         | Les coiffeurs sont des blagueurs
       section id="globalmap"
@@ -41,11 +44,17 @@ html lang="fr"
             | Filter par Ville:
             input class="filter" id="filter_ville" type="text" placeholder="Ville"
         div id="mapid"
-        ul id="listecoiffeurs" title="Cliquez pour zoomer!"
+        aside
+          p id="resultcount"
+          ul id="listecoiffeurs" title="Cliquez pour zoomer!"
       section id="dmap"
         h2
           | Stats par département
         div id="deptmap"
+      section id="about"
+        h2
+          | Informations & Méthodologie
+        include infos.slim
 
     script src="/js/coiffeurs.js"
 

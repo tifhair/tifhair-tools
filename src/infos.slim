@@ -1,8 +1,83 @@
+div class="about" 
+  h3
+    | Qu'est-ce donc?
+  p
+    ' Ce site répertorie les établissements de coiffure (indiqués par le code 
+    a href="https://www.insee.fr/fr/metadonnees/nafr2/sousClasse/96.02A"
+      | Nomenclature d'Activité Française 96.02A
+    '  dont les noms contiennent
+    strong
+      | 'coif'
+    ', 
+    strong
+      | 'tif'
+    ', ou encore 
+    strong
+      | 'épi'
 
-Sur https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/
-telecharger StockEtablissement_utf8.zip et StockUniteLegale_utf8.zip
+    '  dans le but de détecter des jeux de mots ravissants.
+  h3
+    | D'où viennent les données?
+  p
+    ' La source principale des données est l'
+    a href='https://www.insee.fr'
+      | INSEE (Institut national de la statistique et des études économiques)
+    '  qui gère également le répertoire système national d'identification et du répertoire des entreprises et de leurs établissements (SIRENE) comprenant les identifiants système d'identification du répertoire des entreprises (SIREN) des entreprises et SIRET de leurs différents établissements.
+  p
+    | La base complète de tous les établissements est 
+    a href="https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/"
+      | disponible ici
+    | . Les deux bases utilisées sont 
+    a href="https://files.data.gouv.fr/insee-sirene/StockEtablissement_utf8.zip"
+      | StockEtablissement_utf8.zip
+    |  et 
+    a href="https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip"
+      | StockUniteLegale_utf8.zip
 
-lancer sirene.rb pour créer la DB
+    | La première base contient l'intégralité des entreprises et établissements. Toutefois certains noms d'établissements n'y apparaissent pas et la deuxième base est nécessaire pour en trouver des informations plus récentes.
 
-use coords.rb to get coordinates (first with :ban_data_gouv_fr then complete with google & api key
+  h3
+    | Reconstruire la base utilisée ici.
+  p
+    | Une fois les bases téléchargées et décompressées, le script 
+    code 
+      a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/sirene.rb"
+        | sirene.rb
+    |  pour construire le fichier
+    |  
+    code
+      | coiffeurs.sqlite
+    |  Ce script filtre les entrées du fichier 
+    code
+      | /tmp/StockEtablissement_utf8.csv
+    | pour en extraire les établissements de coiffure, et d'autres informations concernant leur nom et addresse.
+
+  p
+    | Pour obtenir les coordonnées latitude/longitude à partir de l'adresse, il faut ensuite utiliser un service de geocoding. J'utilise ici la librairie
+    a href="https://github.com/alexreisner/geocoder"
+      |  Ruby Geocoder
+    |  qui permet d'accéder à la fois aux API de  
+    a href="https://geo.api.gouv.fr/adresse"
+      | l'etalab
+    |  ainsi qu'aux API de 
+    a href="https://developers.google.com/maps/documentation/geocoding/overview"
+      |  Google
+    |  qui, elles, necessitent une clé API.
+
+  p
+    | Le script 
+    code
+      a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/coords.rb"
+        | coords.rb
+
+    |  permet d'utiliser ces APIs. Lancer d'abord  
+    code
+      | ruby coords.rb
+    |  pour mettre à jour le plus d'adresse avec l'API etalab, puis (apres avoir mis à jour le fichier 
+    code
+      | .api_key  
+    |  avec votre clé API, lancer 
+    code
+      | ruby coords.rb google
+    |  pour obtenir le coordonnées des adresses qui n'ont pas pu être résolues avec l'etalab.
 

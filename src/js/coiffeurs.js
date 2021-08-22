@@ -160,7 +160,9 @@ function showCoiffeursGeoJSON(data) {
         }
     });
     var markers = L.markerClusterGroup();
+    var counter = document.getElementById("resultcount");
     markers.addLayer(geoJsonLayer);
+    counter.innerHTML="Nb de résultats: "+markers.getLayers().length;
     map.addLayer(markers);
 };
 
