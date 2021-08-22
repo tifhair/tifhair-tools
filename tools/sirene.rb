@@ -17,19 +17,18 @@ def usage()
 end
 
 etab_file = ARGV[0]
-unless File.exist?(etab_file)
+if not etab_file or not File.exist?(etab_file)
   usage
   exit
 end
 
 unite_file = ARGV[1]
-unless File.exist?(unite_file)
+if not unite_file or not File.exist?(unite_file)
   usage
   exit
 end
 
-
-# Load extra possible names 
+$stderr.puts "Loading extra possible names from #{unite_file}" 
 extra_names = {}
 CSV.foreach(ARGV[0], headers:true) do |l|
   next if l['activitePrincipaleUniteLegale'] != "96.02A"
@@ -39,12 +38,13 @@ CSV.foreach(ARGV[0], headers:true) do |l|
   extra_names[siren] = nom
 end
 
+$stderr.puts "calculating number of lines to parse"
 total = `wc -l /tmp/StockEtablissement_utf8.csv  | cut -d " " -f 1`.strip().to_i()
 
 i = 0
 CSV.foreach('/tmp/StockEtablissement_utf8.csv', headers:true) do |line|
   i+=1
-  if i%50000 == 0
+  if i%10000 == 0
     $stderr.puts "\r #{i}/#{total} (#{100*i/total}%)\r"
   end
   activite = line["activitePrincipaleEtablissement"]

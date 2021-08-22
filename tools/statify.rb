@@ -2,6 +2,7 @@ require "uri"
 require "fileutils"
 require "json"
 require "slim"
+require 'slim/include'
 require "sqlite3"
 
 $blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%") ORDER BY RANDOM()'
@@ -114,8 +115,8 @@ def make_dept_geojson(db_file, source, dest)
   puts "written #{dest}"
 end
 db_file = File.join(source_dir, "coiffeurs.sqlite")
-make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
-make_json(db_file, dest_dir, $blague)
+#make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
+#make_json(db_file, dest_dir, $blague)
 slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
 slimify(File.join(source_dir, "infos.slim"), File.join(dest_dir, "infos.html"))
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
