@@ -4,13 +4,14 @@ require "sqlite3"
 STDOUT.sync = true
 
 dbfile = "coiffeurs.sqlite"
-db = SQLite3::Database.open(dbfile)
 
 if not File.exist?(dbfile)
   db.transaction
   db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, blague BOOL, etat TEXT);"
   db.commit
 end
+
+db = SQLite3::Database.open(dbfile)
 
 def usage()
   puts "run sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv"

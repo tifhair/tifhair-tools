@@ -9,8 +9,6 @@
   background-color: #00a087;
 }
 
-/* The element at the top of the page right after the fixed navigation bar
-   MUST have sufficient top margin or else it will be covered by the bar */
 .content {
   margin-top: 20px;
 }
@@ -20,6 +18,7 @@
   height: 50px;
   line-height: 50px;
 }
+
 .menu {
   width: 90%;
   max-width: 960px;

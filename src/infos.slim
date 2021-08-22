@@ -21,7 +21,7 @@ div class="about"
   p
     ' La source principale des données est l'
     a href='https://www.insee.fr'
-      | INSEE (Institut national de la statistique et des études économiques)
+      |INSEE (Institut national de la statistique et des études économiques)
     '  qui gère également le répertoire système national d'identification et du répertoire des entreprises et de leurs établissements (SIRENE) comprenant les identifiants système d'identification du répertoire des entreprises (SIREN) des entreprises et SIRET de leurs différents établissements.
   p
     | La base complète de tous les établissements est 
@@ -34,17 +34,40 @@ div class="about"
     a href="https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip"
       | StockUniteLegale_utf8.zip
 
-    | La première base contient l'intégralité des entreprises et établissements. Toutefois certains noms d'établissements n'y apparaissent pas et la deuxième base est nécessaire pour en trouver des informations plus récentes.
+    |. La première base contient l'intégralité des entreprises et établissements. Toutefois certains noms d'établissements n'y apparaissent pas et la deuxième base est nécessaire pour en trouver des informations plus récentes.
 
   h3
-    | Reconstruire la base utilisée ici.
+    | Méthodologie
+  p
+    | Pour la sélection des noms d'établissement depuis la base INSEE, le seul critère est que le nom contiennent une de ces chaines de caractère: 
+    code
+      | hair
+    |, 
+    code
+      | tif
+    |, 
+    code
+      | epi
+    |, 
+    code
+      | mech
+    |. D'autres mots relatifs à la coiffure sont parfois utilisés pour des jeux de mots, par exemple 
+    code
+      | coiff
+    | . Un 
+    a href="http://www.coiff-emoi-tremblay.com/"
+      |salon de Seine-Saint-Denis
+    | s'appelle par exemple "Coiff'Emoi". Toutefois, un très grand nombre de coiffeurs ont cette chaine de caractère dans leur nom, sans jeu de mot particulier.
+    | Un certain nombre de salon avec "hair" dans le nom ne contiennent pas de jeu de mot, tel que "Hair City" à BAGNEUX (92220).
+
+  h3
+    | Reconstruire le jeu de données de ce site
   p
     | Une fois les bases téléchargées et décompressées, le script 
     code 
       a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/sirene.rb"
         | sirene.rb
     |  pour construire le fichier
-    |  
     code
       | coiffeurs.sqlite
     |  Ce script filtre les entrées du fichier 
@@ -81,3 +104,39 @@ div class="about"
       | ruby coords.rb google
     |  pour obtenir le coordonnées des adresses qui n'ont pas pu être résolues avec l'etalab.
 
+  p
+    | Pour des soucis de performance, la totalité de la base de données est ensuite exportée au format geojson pour être utilisé par les cartes Leaflets ci-dessus.
+    |  Le script 
+    code
+      a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/statify.rb"
+        | statify.rb
+
+    |  réalise les transformations nécessaires pour construire l'intégralité du site 
+    a href="https://tif.hair"
+      | tif.hair
+    |  dans un répertoire de destination en lançant 
+    code
+      |  ruby statify.rb src <destination>
+
+  h3
+    |Licences
+  ul
+    li
+      a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence"
+        |Licence ouverte etalab
+    li
+      a href="https://github.com/alexreisner/geocoder/blob/master/LICENSE"
+        |Ruby Geocoder MIT License
+    li
+      a href="https://www.insee.fr/fr/information/2381863"
+        |Conditions utilisation données INSEE
+    li
+      a href="https://github.com/Leaflet/Leaflet/blob/master/LICENSE"
+        |Leaflet License
+    li
+      a href="https://github.com/Leaflet/Leaflet.markercluster/blob/master/MIT-LICENCE.txt"
+        |MarkerCluster MIT License
+    li
+      a href="https://github.com/jgthms/minireset.css/blob/master/LICENSE"
+        |MiniReset MIT License
+  

@@ -29,7 +29,7 @@ html lang="fr"
         div class="filters"
           label
             | Filter par Nom:
-            input class="filter" id="filter_name" type="text" placeholder="Établissement"
+            input class="filter" id="filter_name" type="search" placeholder="Établissement"
           label
             | Filter par Departement:
             select id="filter_dept" class="filter"
@@ -42,11 +42,16 @@ html lang="fr"
                   | 97
           label
             | Filter par Ville:
-            input class="filter" id="filter_ville" type="text" placeholder="Ville"
+            input class="filter" id="filter_ville" type="search" placeholder="Ville"
         div id="mapid"
         aside
           p id="resultcount"
           ul id="listecoiffeurs" title="Cliquez pour zoomer!"
+      section id="stats"
+        h2
+          | Statistiques et palmarès
+        include stats.slim
+
       section id="dmap"
         h2
           | Stats par département

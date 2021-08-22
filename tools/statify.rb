@@ -5,7 +5,10 @@ require "slim"
 require 'slim/include'
 require "sqlite3"
 
-$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%") ORDER BY RANDOM()'
+Slim::Engine.set_options pretty: true, sort_attrs: false
+
+$blague = 'etat = "A" AND blague=1 ORDER BY RANDOM()'
+#$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%") ORDER BY RANDOM()'
 
 def usage
   puts "run statify.rb <source_dir> <dest_dir>"
@@ -72,9 +75,9 @@ def make_marker_html(nom, addresse)
   return "<p><b>#{nom}</b></p><p><a class='button' target='_blank' href='https://maps.google.com/?q=#{n} #{a}'>Ouvrir dans Google Maps</a></p>"
 end
 
-def slimify(slim_template, dest)
+def slimify(slim_template, dest, params=nil)
   File.open(dest, 'w') do |f|
-    content = Slim::Template.new(slim_template).render()
+    content = Slim::Template.new(slim_template).render(Object.new, params)
     f.write(content)
   end
   puts "written #{dest}"
@@ -114,11 +117,58 @@ def make_dept_geojson(db_file, source, dest)
   end
   puts "written #{dest}"
 end
+
+def db_get_count_pattern(db, pattern)
+  return db.execute("SELECT count(*) from Coiffeurs WHERE #{pattern} LIMIT 1")[0][0]
+end
+
+def build_stats(db_file, slim_file)
+  db = SQLite3::Database.open(db_file)
+  content = <<-SLIM.chomp
+/ Ne pas éditer ce fichier, le script statify.rb l'écrasera
+div class='palmares'
+  p
+    | D'abord quelques chiffres:
+    ul
+      -chiffres.each do |c|
+        li
+          = c[0]%c[1]
+  p
+    | Bien qu'il ne soit plus en activité le salon <b> A Thaon Tifs</b>, à Thaon (Calvados) realise un jeu de mot animalier"
+  p
+    | Certains salons semblent avoir tenté des jeux de mots, pas tout à fait heureux:" 
+    ul
+      li
+        | ATMOS'HAIRS ()
+
+SLIM
+
+  variables = {chiffres: []} 
+  [
+    ["caract'hair", "%ara%t%hair%"],
+    ["Atmosp'hair\"",   "%atmos%air%"],
+    ["Imagin'hair\"",   "%imagin%air%"],
+    ["Bulles d'hair\"", "%bull%d%air%"],
+    ["caract'hair\"",   "%ara%t%hair%"],
+  ].each do |n,r|
+    variables[:chiffres] << ["Il y a %d salons actifs qui avec un dérivé de \"#{n}\"", db_get_count_pattern(db, "active=1 AND name LIKE '#{r}'")]
+  end
+
+  File.open(slim_file, 'w') do |f|
+    f.write(content)
+  end
+  puts "written #{slim_file}"
+  return variables
+end
+
 db_file = File.join(source_dir, "coiffeurs.sqlite")
 #make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
 #make_json(db_file, dest_dir, $blague)
-slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
-slimify(File.join(source_dir, "infos.slim"), File.join(dest_dir, "infos.html"))
+
+#slimify(File.join(source_dir, "infos.slim"), File.join(dest_dir, "infos.html"))
+variables = build_stats(db_file, File.join(source_dir, "stats.slim"))
+
+slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"), params=variables)
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
 copy_dir(File.join(source_dir, 'js'), dest_dir)
 copy_dir(File.join(source_dir, 'pics'), dest_dir)

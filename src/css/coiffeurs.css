@@ -77,9 +77,10 @@ h3 {
     font-weight: bold;
 }
 
-input[type=text] {
+input[type=search] {
     margin: 5px;
 }
+
 
 #mapid {
     background: #fee;
@@ -147,4 +148,29 @@ div.about p {
 
 div.about code {
     background-color: #eeeeee;
+}
+div.about ul {
+    margin-left: 20px;
+}
+div.about ul li {
+    list-style: square;
+}
+
+div.palmares {
+    column-count:  2;
+}
+
+div.palmares p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+div.palmares code {
+    background-color: #eeeeee;
+}
+div.palmares ul {
+    margin-left: 20px;
+}
+div.palmares ul li {
+    list-style: square;
 }
