@@ -32,6 +32,17 @@ if not File.directory?(dest_dir)
   exit
 end
 
+def db_get_addresse_by_name(db, name)
+  rows = db.execute("SELECT name, numero_rue, voie, ville  FROM Coiffeurs WHERE name = ? AND etat='A' ORDER BY RANDOM() LIMIT 1", name)
+  if rows.size==1
+    _, num, voie, ville = rows[0]
+    addresse = [num, voie, ville].join(' ').strip()
+    return addresse
+  end
+  return ""
+end
+
+
 def make_json(db_file, dest_dir, filter)
   db = SQLite3::Database.open(db_file)
   res = {'data' => {
@@ -69,10 +80,14 @@ def make_json(db_file, dest_dir, filter)
   puts "Written #{json_path}"
 end
 
-def make_marker_html(nom, addresse)
+def gmap_url(nom, addresse)
   n = URI.encode_www_form_component(nom)
   a = URI.encode_www_form_component(addresse)
-  return "<p><b>#{nom}</b></p><p><a class='button' target='_blank' href='https://maps.google.com/?q=#{n} #{a}'>Ouvrir dans Google Maps</a></p>"
+  return "https://maps.google.com/?q=#{n} #{a}"
+end
+
+def make_marker_html(nom, addresse)
+  return "<p><b>#{nom}</b></p><p><a class='button' target='_blank' href='#{gmap_url(nom, addresse)}'>Ouvrir dans Google Maps</a></p>"
 end
 
 def slimify(slim_template, dest, params=nil)
@@ -96,6 +111,7 @@ def get_coiffeurs_by_dept(db_file, dept)
     d = "20"
   end
   db = SQLite3::Database.open(db_file)
+
   res = db.execute("SELECT count(*) FROM Coiffeurs WHERE codepostal LIKE ? AND #{$blague}", d+"%")
   blagueurs =  res[0][0]
   res = db.execute("SELECT count(*) FROM Coiffeurs WHERE codepostal LIKE ?", d+"%")
@@ -124,51 +140,149 @@ end
 
 def build_stats(db_file, slim_file)
   db = SQLite3::Database.open(db_file)
-  content = <<-SLIM.chomp
+  content = <<-SLIM1.chomp
 / Ne pas éditer ce fichier, le script statify.rb l'écrasera
 div class='palmares'
-  p
+  h3
     | D'abord quelques chiffres:
+  p
     ul
-      -chiffres.each do |c|
-        li
-          = c[0]%c[1]
+
+SLIM1
+[
+    ["caract'hair", "%ara%t%hair%"],
+    ["Atmosp'hair",   "%atmos%air%"],
+    ["Imagin'hair",   "%imagin%air%"],
+    ["Bulles d'hair", "%bull%d%air%"],
+    ["caract'hair",   "%ara%t%hair%"],
+  ].each do |n,r|
+    content << "      li\n        |Il y a #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs qui avec un dérivé de \"#{n}\"\n"
+  end
+
+  content << """
+  h3
+    | Palmarès d'excellents calembours
   p
-    | Bien qu'il ne soit plus en activité le salon <b> A Thaon Tifs</b>, à Thaon (Calvados) realise un jeu de mot animalier"
+    | Bien qu'il ne soit plus en activité le salon 
+    a target='_blank' href='#{gmap_url('A Thaon Tifs', db_get_addresse_by_name(db, 'A Thaon Tifs'))}'
+      | A Thaon Tifs
+    |  à Thaon (Calvados) realise un jeu de mot animalier. D'autres, encore en activité aiment aussi les animaux:
+    ul
+"""
+  [
+    "HAIR'IS'SON",
+    "VIP'HAIR",
+    "BUTT'HAIR FLY"
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
   p
-    | Certains salons semblent avoir tenté des jeux de mots, pas tout à fait heureux:" 
+    | Certains salons semblent avoir tenté des jeux de mots, pas tout à fait heureux, ou avec le mauvais champs lexical:
+    ul
+"""
+  [
+      "ABCD TIF",
+      "ARTIST'TIF",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Des phrases et locutions:
+    ul
+"""
+  [
+    "AU PAYS DES M'HAIR VEILLES",
+    "AINSI SOIT TIF",
+    "AH QUE TIFS",
+    "TELLE M'HAIR TELLE FILLE",
+    "SAVOIR COIF HAIR",
+    "FAUDRA TIF HAIR",
+    "LE BEST C L'HAIR",
+    "ALT'HAIR  & GO",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Plusieurs salons ont des noms en rapport avec la région:
     ul
       li
-        | ATMOS'HAIRS ()
+        a target='_blank' href='#{gmap_url("CORS'HAIR", db_get_addresse_by_name(db, "CORS'HAIR"))}'
+          | CORS'HAIR
+        |  à Saint-Malo
+      li
+        a target='_blank' href='#{gmap_url("FINIST'HAIR", db_get_addresse_by_name(db, "FINIST'HAIR"))}'
+          | FINIST'HAIR
+        |  en Bretagne
+"""
 
-SLIM
-
-  variables = {chiffres: []} 
+  content << """
+  p
+    | Ceux-ci semblent pouvoir fournir des services... 'différents':
+    ul
+"""
   [
-    ["caract'hair", "%ara%t%hair%"],
-    ["Atmosp'hair\"",   "%atmos%air%"],
-    ["Imagin'hair\"",   "%imagin%air%"],
-    ["Bulles d'hair\"", "%bull%d%air%"],
-    ["caract'hair\"",   "%ara%t%hair%"],
-  ].each do |n,r|
-    variables[:chiffres] << ["Il y a %d salons actifs qui avec un dérivé de \"#{n}\"", db_get_count_pattern(db, "active=1 AND name LIKE '#{r}'")]
+    "CED'A TIF",
+    "ADULT'HAIR",
+    "MISSION HAIR",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
+
+  content << """
+  p
+    | Une selections de noms très originaux:
+    ul
+"""
+  [
+    "LA CHAMBRE A HAIR",
+    "VENT'CONTR'HAIR",
+    "TRALAL'HAIR",
+    "SAGIT HAIR",
+    "REVOLVHAIR",
+    "RECUP'HAIR",
+    "NUCL HAIR",
+    "NEFERTI'TIF",
+    "NAMAST'HAIR",
+    "LUCIF'HAIR",
+    "IMP'HAIRIAL",
+    "F'HAIR FORGE-COIFFURE",
+    "DIV HAIR GENS",
+    "CYMIL'HAIR",
+    "COLOCAT'HAIR",
+    "CLAFOU'TIFS",
+    "BUENO S HAIR",
+    "BOUC ET MISS HAIR",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+    p
+      | Pour finir, il semble que depuis le début de l'enregistrements des établissements dans la base de l'INSEE, aucun salon de coiffure ne se soit appelé:
+      ul
+        li
+          | 'Apéritif'
+"""
 
   File.open(slim_file, 'w') do |f|
     f.write(content)
   end
   puts "written #{slim_file}"
-  return variables
 end
 
 db_file = File.join(source_dir, "coiffeurs.sqlite")
-#make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
-#make_json(db_file, dest_dir, $blague)
+make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
+make_json(db_file, dest_dir, $blague)
 
-#slimify(File.join(source_dir, "infos.slim"), File.join(dest_dir, "infos.html"))
-variables = build_stats(db_file, File.join(source_dir, "stats.slim"))
+build_stats(db_file, File.join(source_dir, "stats.slim"))
 
-slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"), params=variables)
+slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
 copy_dir(File.join(source_dir, 'js'), dest_dir)
 copy_dir(File.join(source_dir, 'pics'), dest_dir)
