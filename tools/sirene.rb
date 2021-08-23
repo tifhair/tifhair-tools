@@ -45,7 +45,10 @@ extra_names = {}
 i=0
 CSV.foreach(ARGV[0], headers:true) do |l|
   i+=1
-  progressbar.progress += 10000 if i%10000 ==0
+  begin
+    progressbar.progress += 10000 if i%10000 ==0
+  rescue
+  end
   next if l['activitePrincipaleUniteLegale'] != "96.02A"
   nom = l['denominationUsuelle1UniteLegale'] || l['denominationUsuelle2UniteLegale'] || l['denominationUsuelle3UniteLegale']
   next unless nom
@@ -62,7 +65,10 @@ progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c 
 i=0
 CSV.foreach(etab_file, headers:true) do |line|
   i+=1
-  progressbar.progress += 10000 if i%10000 ==0
+  begin
+    progressbar.progress += 10000 if i%10000 ==0
+  rescue
+  end
   activite = line["activitePrincipaleEtablissement"]
   next unless activite
   next unless activite.start_with?("96.02A")
