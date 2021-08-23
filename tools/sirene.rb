@@ -4,6 +4,7 @@ require "sqlite3"
 STDOUT.sync = true
 
 dbfile = "coiffeurs.sqlite"
+db = SQLite3::Database.open(dbfile)
 
 if not File.exist?(dbfile)
   db.transaction
@@ -11,7 +12,6 @@ if not File.exist?(dbfile)
   db.commit
 end
 
-db = SQLite3::Database.open(dbfile)
 
 def usage()
   puts "run sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv"
