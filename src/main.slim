@@ -2,6 +2,7 @@ doctype html
 html lang="fr"
   head
     meta charset="utf-8"
+    meta name="viewport" content="width=device-width, initial-scale=1"
     title
       |Coiffeurs Blagueurs
     link rel="icon" type=="image/png" sizes="32x32" href="/pics/favicon-32x32.png"
@@ -44,8 +45,10 @@ html lang="fr"
             | Filter par Ville:
             input class="filter" id="filter_ville" type="search" placeholder="Ville"
         div id="mapid"
-        aside
+        aside id="asideresults"
           p id="resultcount"
+          button id="read_more" class="read_more"
+            | Afficher plus
           ul id="listecoiffeurs" title="Cliquez pour zoomer!"
       section id="stats"
         h2

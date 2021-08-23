@@ -5,8 +5,9 @@ html {
 }
 
 body {
-    padding-top:50px;
+    padding-top: 3rem;
 }
+
 label {
     margin: 5px;
 }
@@ -15,54 +16,16 @@ select {
     margin: 5px;
 }
 
-
-/*
-.container > * {
-    border: 1px solid green;
-}
-
-section > * {
-    border: 1px solid red;
-}
-*/
-
-div.container {
-    width: 80vw;
-    margin: 10px auto;
-}
-section#globalmap {
-    display: grid;
-    margin: 0 auto;
-    grid-auto-columns: 2fr 1fr;
-    grid-template-rows: 100px 30px calc(100vh - 30px);
-    grid-gap: 1rem;
-}
-
-section#globalmap h2 {
-    grid-column: span 2;
-}
-
-section#globalmap div.filters {
-    grid-column: span 2;
-}
-
-section#dmap {
-    display: grid;
-    margin: 0 auto;
-    grid-auto-columns: 1fr;
-    grid-template-rows: 100px calc(100vh - 30px);
-    grid-gap: 1rem;
-}
-
 h1 {
     font-size: 4rem;
     font-weight: bold;
     text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 h2 {
-    margin: 20px;
-    margin-top: 70px;
+    margin-left: 20px;
     font-size: 1.5rem;
     font-weight: bold;
 }
@@ -77,13 +40,51 @@ h3 {
     font-weight: bold;
 }
 
-input[type=search] {
-    margin: 5px;
+.container {
+    width: 80vw;
+    margin: 10px auto;
+}
+
+
+section {
+    margin-top: -4rem;
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+}
+
+section#globalmap {
+    display: grid;
+    grid-auto-columns: 2fr 1fr;
+    grid-template-rows: 30px 30px calc(100vh - 30px);
+    grid-gap: 1rem;
 }
 
 
 #mapid {
     background: #fee;
+}
+
+section#globalmap h2 {
+    grid-column: span 2;
+}
+
+section#globalmap div.filters {
+    grid-column: span 2;
+}
+
+section#globalmap button#read_more {
+    display: none;
+}
+
+section#dmap {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-rows: 30px calc(100vh - 30px);
+    grid-gap: 1rem;
+}
+
+input[type=search] {
+    margin: 5px;
 }
 
 #listecoiffeurs {
@@ -94,6 +95,33 @@ input[type=search] {
 
 aside{
     overflow: scroll;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 2.5rem;
+    }
+    .container {
+        width: 90vw;
+    }
+    h1 {
+        font-size: 2.5rem;
+    }
+    #mapid {
+    }
+    section#globalmap {
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-template-rows: 30px 100px calc(100vh - 130px);
+    }
+    section#globalmap div.filters label{
+        display: block;
+        width: 100%;
+    }
+
+    aside#asideresults {
+        overflow: hidden;
+    }
 }
 
 aside p {
@@ -137,13 +165,16 @@ a.button {
     margin: 0 0 5px;
     color: #777;
 }
-div.about {
-    column-count:  2;
+
+@media (min-width: 768px) {
+    .about, .palmares {
+        column-count:  2;
+    }
 }
 
 div.about p {
     margin-top: 10px;
-    font-size: 1.2rem;
+/*    font-size: 1.2rem;*/
 }
 
 div.about code {
@@ -154,16 +185,12 @@ div.about ul {
 }
 div.about ul li {
     list-style: square;
-    font-size: 1.2rem;
-}
-
-div.palmares {
-    column-count:  2;
+/*    font-size: 1.2rem;*/
 }
 
 div.palmares p {
     margin-top: 10px;
-    font-size: 1.2rem;
+/*    font-size: 1.2rem; */
 }
 
 div.palmares code {
@@ -174,5 +201,5 @@ div.palmares ul {
 }
 div.palmares ul li {
     list-style: square;
-    font-size: 1.2rem;
+/*    font-size: 1.2rem; */
 }

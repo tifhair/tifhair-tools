@@ -6,6 +6,14 @@ $google=false
 
 db_file = ARGV[0]
 
+if ARGV.size == 0
+  raise "ruby coords.rb <coiffeurs.sqlite>"
+end
+
+if not File.exist?(db_file)
+  raise "#{db_file} does not exist"
+end
+
 if ARGV.size==2
   $google=true
   Geocoder.configure(
@@ -27,7 +35,6 @@ def update_with_google(db, row)
   if res
     lat = res.data["geometry"]["location"]["lat"]
     lng = res.data["geometry"]["location"]["lng"]
-    pp lat,lng
     if res.data["plus_code"]
       code = res.data["plus_code"]["global_code"]
     end
@@ -49,6 +56,7 @@ end
 coiffeurs = db.execute("SELECT siret, numero_rue, voie, codepostal, ville FROM Coiffeurs WHERE etat='A' AND lat IS NULL")
 total = coiffeurs.size()
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
+
 coiffeurs.each do |row|
   progressbar.increment
 

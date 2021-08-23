@@ -189,4 +189,3 @@ getJSON("/departements.geojson", function(err, data) {
 
 
 Array.from(document.getElementsByClassName("filter")).forEach(input => input.addEventListener('input', function(e){showCoiffeursGeoJSON(coiffeurs_json)}));
-

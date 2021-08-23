@@ -1,3 +1,4 @@
+/* From https://github.com/sixrevisions/fixed-navigation-bar */
 .fixed-nav-bar {
   position: fixed;
   top: 0;
@@ -59,10 +60,10 @@ a.sitename, a:visited.sitename {
   color: #dde1e2;
 }
 .show {
-  background-image: url(assets/down-arrow-icon.png);
+  background-image: url(/pics/down-arrow-icon.png);
 }
 .hide {
-  background-image: url(assets/up-arrow-icon.png);
+  background-image: url(/pics/up-arrow-icon.png);
 }
 
 @media only screen and (max-width: 800px) {

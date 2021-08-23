@@ -263,13 +263,28 @@ SLIM1
   end
 
   content << """
-    p
-      | Pour finir, il semble que depuis le début de l'enregistrement des établissements dans la base de l'INSEE, aucun salon de coiffure ne se soit appelé:
-      ul
-        li
-          | 'Apéritif'
-        li
-          | 'Culin'hair'
+  p
+    | En listant les mots utilisés par chaque établissement, trié par ordre d'apparition, et filtré sur le champs lexical de la coiffure a également permis de déterrer quelsques perles comme:
+    ul
+"""
+  [
+    "NO S TRESSES",
+    "QUEER CHEVELU",
+    "NO PEIGNE NO GAIN"
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Pour finir, il semble que depuis le début de l'enregistrement des établissements dans la base de l'INSEE, aucun salon de coiffure ne se soit appelé:
+    ul
+      li
+        | 'Apéritif'
+      li
+        | 'Culin'hair'
+      li
+        | 'James Blonde'
 """
 
   File.open(slim_file, 'w') do |f|

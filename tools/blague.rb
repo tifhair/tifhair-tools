@@ -2,7 +2,7 @@ require "sqlite3"
 
 dbfile = ARGV[0]
 
-$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%")'
+$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%" OR name LIKE "%tete%")'
 db = SQLite3::Database.open(dbfile)
 
 # Les classiques
@@ -20,6 +20,8 @@ db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%instinc%tif%'")
 db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%univ%hair%'")
 db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%de meche avec%'")
 db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%beautiful%'")
+db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%racine%carr%'")
+
 
 i=0
 tab = db.execute("SELECT name, Count(name) as cnt FROM Coiffeurs WHERE #{$blague} AND blague IS NULL GROUP BY name ORDER BY name DESC")
