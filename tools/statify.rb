@@ -179,18 +179,6 @@ SLIM1
 
   content << """
   p
-    | Certains salons semblent avoir tenté des jeux de mots, pas tout à fait heureux, ou avec le mauvais champs lexical:
-    ul
-"""
-  [
-      "ABCD TIF",
-      "ARTIST'TIF",
-  ].each do |n|
-    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
-  end
-
-  content << """
-  p
     | Des phrases et locutions:
     ul
 """
@@ -206,6 +194,85 @@ SLIM1
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
+
+  content << """
+  p
+    | Certains tentent des blagues multi-lingues:
+    ul
+"""
+  [
+    "UPSTHAIRS",
+    "UNITED HAIR LINES",
+    "F'HAIR PLAY",
+    "ROCKSTHAIR",
+    "ROCK HAIR ROLL",
+    "BIO TIFF HOULE",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Les fans de mathématiques pourront se rendre au choix chez:
+    ul
+"""
+  [
+    "TRIANGUL'HAIR",
+    "LINE ET HAIR"
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Tandis que les littéraires seront plus attirés par:
+    ul
+"""
+  [
+    "VOLT'HAIR COIFFURE",
+    "APAULINE'HAIR",
+    "GRAMME HAIR",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Les informaticiens ne sont pas en reste avec
+    ul
+"""
+  [
+      "CYB HAIR",
+      "CIB'HAIR"
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+
+  content << """
+  p
+    | De nombreuses possibilités pour intégrer son nom dans celui de son salon:
+    ul
+"""
+  [
+    "AXELLE' HAIR",
+    "VAL'HAIR'IE",
+    "JENNIF'HAIR",
+    "TIFFANY COIFFURE",
+    "HAIR'V",
+    "CL' HAIR",
+    "EMMAGINA'TIF",
+    "BERENG'HAIR",
+    "SEV HAIR'IN",
+    "FRED'HAIR'IC",
+    "ALB'HAIR COIFFURE A DOMICILE",
+    "MYLEN HAIR",
+    "J'HAIR-AIME",
+    "HAIR'ONE",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
 
   content << """
   p
@@ -236,6 +303,22 @@ SLIM1
 
   content << """
   p
+    | Ces salons n'hésitent pas à chercher dans les références 'Pop':
+    ul
+"""
+  [
+    "ABRARACOUR 'TIFS",
+    "TIFS ET TONDU",
+    "SPEED'HAIR MAN",
+    "PRINCE DE BEL HAIR",
+    "PARTOUTA'TIF",
+    "GIJHAIR",
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
     | Une séléction de noms très originaux:
     ul
 """
@@ -247,6 +330,8 @@ SLIM1
     "REVOLVHAIR",
     "RECUP'HAIR",
     "NUCL HAIR",
+    "LA POUDRI'HAIR",
+    "PETARD A MECHE",
     "NEFERTI'TIF",
     "NAMAST'HAIR",
     "LUCIF'HAIR",
@@ -264,13 +349,39 @@ SLIM1
 
   content << """
   p
+    | Certains salons semblent avoir tenté des jeux de mots, pas tout à fait heureux, ou avec le mauvais champs lexical:
+    ul
+"""
+  [
+      "ABCD TIF",
+      "ARTIST'TIF",
+      "SCARAMECHE"
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
     | En listant les mots utilisés par chaque établissement, trié par ordre d'apparition, et filtré sur le champs lexical de la coiffure a également permis de déterrer quelsques perles comme:
     ul
 """
   [
     "NO S TRESSES",
     "QUEER CHEVELU",
+    "SAM DECOIFF",
+    "LA COUPA CABANA",
     "NO PEIGNE NO GAIN"
+  ].each do |n|
+    content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
+  end
+
+  content << """
+  p
+    | Mais le plus drôle de tous reste:
+    ul
+"""
+  [
+      "MD'HAIR"
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end

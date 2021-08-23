@@ -2,7 +2,11 @@ require "sqlite3"
 
 dbfile = ARGV[0]
 
-$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%" OR name LIKE "%tete%")'
+if not dbfile or not File.exist?(dbfile)
+  raise "Usage: ruby blague.rb <sqlite>"
+end
+
+$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%" OR name LIKE "%tete%" OR name LIKE "%decoif%")'
 db = SQLite3::Database.open(dbfile)
 
 # Les classiques
