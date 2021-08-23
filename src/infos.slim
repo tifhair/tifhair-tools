@@ -15,7 +15,7 @@ div class="about"
     strong
       | 'épi'
 
-    '  dans le but de détecter des jeux de mots ravissants.
+    ' , qui sont encore en activité au 1er août 2021, dans le but de détecter des jeux de mots ravissants.
   h3
     | D'où viennent les données?
   p
@@ -36,10 +36,13 @@ div class="about"
 
     |. La première base contient l'intégralité des entreprises et établissements. Toutefois certains noms d'établissements n'y apparaissent pas et la deuxième base est nécessaire pour en trouver des informations plus récentes.
 
+  p
+    | Malgré tout ceci, il semble que beaucoup de différences existent entre les bases INSEE et la "réalité" (telle que par exemple Google Maps permet d'explorer). Soit parceque les établissements ont fermé ou changé de nom depuis la date d'export de la base (1er aout 2021), soit parceque certaines entreprises déclarées sont domiciliées dans une zone résidentielle, sans réel établissement (par exemple: les coiffeurs à domicile).
+
   h3
     | Méthodologie
   p
-    | Pour la sélection des noms d'établissement depuis la base INSEE, le seul critère est que le nom contiennent une de ces chaines de caractère: 
+    | Pour la sélection des noms à blague, parmis les 46000+ établissement de la base INSEE, une première passe consiste à sélectionner ceux dont le nom contiennent une de ces chaines de caractère: 
     code
       | hair
     |, 
@@ -51,14 +54,22 @@ div class="about"
     |, 
     code
       | mech
-    |. D'autres mots relatifs à la coiffure sont parfois utilisés pour des jeux de mots, par exemple 
+    |, ce qui réduit le compte à ~5700, puis de manuellement filtrer ceux qui contiennent effectivement un jeu de mots (et eliminer les nombreux "Hair Fashion" et autres "Hair Instituts, etc.), ce qui réduit la liste à ~4000. Ce traitement étant manuel, des oublis ont pu être faits sur des calembours les moins évidents... Pour cette étape, le script 
+    code 
+      a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/blague.rb"
+        | blague.rb
+    |  facilite la revue des noms d'établissement.
+
+  p
+    |D'autres mots relatifs à la coiffure sont parfois utilisés pour des calembours, par exemple 
     code
       | coiff
     | . Un 
     a href="http://www.coiff-emoi-tremblay.com/"
       |salon de Seine-Saint-Denis
-    | s'appelle par exemple "Coiff'Emoi". Toutefois, un très grand nombre de coiffeurs ont cette chaine de caractère dans leur nom, sans jeu de mot particulier.
-    | Un certain nombre de salon avec "hair" dans le nom ne contiennent pas de jeu de mot, tel que "Hair City" à BAGNEUX (92220).
+    | s'appelle par exemple "Coiff'Emoi". Toutefois, un très grand nombre de coiffeurs ont cette chaine de caractère dans leur nom (plus de 21000), dont la plupart ne contiennent aucun jeu de mot particulier, ce qui rendrait un traitement manuel particulièrement fastidieux. 
+  p
+    | Dans les exemples de noms amusants, si plusieurs établissements ont le même nom, un d'entre eux sera pris au hasard lors de la génération du site.
 
   h3
     | Reconstruire le jeu de données de ce site
