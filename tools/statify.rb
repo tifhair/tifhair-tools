@@ -268,6 +268,8 @@ SLIM1
       ul
         li
           | 'Apéritif'
+        li
+          | 'Culin'hair'
 """
 
   File.open(slim_file, 'w') do |f|

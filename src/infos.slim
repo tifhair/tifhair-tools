@@ -81,10 +81,10 @@ div class="about"
     code 
       a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/sirene.rb"
         | sirene.rb
-    |  pour construire le fichier
+    |  permet de construire le fichier
     code
       |  coiffeurs.sqlite
-    |  Ce script filtre les entrées du fichier 
+    | . Ce script filtre les entrées du fichier 
     code
       | /tmp/StockEtablissement_utf8.csv
     |  pour en extraire les établissements de coiffure, et d'autres informations concernant leur nom et adresse.
@@ -113,7 +113,7 @@ div class="about"
     |  pour mettre à jour le plus d'adresse avec l'API etalab, puis (après avoir mis à jour le fichier 
     code
       | .api_key  
-    |  avec votre clé API, lancer 
+    |  avec votre clé API), lancer 
     code
       | ruby coords.rb google
     |  pour obtenir le coordonnées des adresses qui n'ont pas pu être résolues avec l'etalab.
