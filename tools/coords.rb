@@ -3,11 +3,13 @@ require "sqlite3"
 
 $google=false
 
-if ARGV[0] == "google"
+db_file = ARGV[0]
+
+if ARGV.size==2
   $google=true
   Geocoder.configure(
     lookup: :google,
-    api_key: File.read('.api_key').strip()
+    api_key: File.read([ARGV[1]]).strip()
   )
 else
   Geocoder.configure(
@@ -16,7 +18,7 @@ else
 end
 
 
-db = SQLite3::Database.open("../coiffeurs.sqlite")
+db = SQLite3::Database.open(db_file)
 def update_with_google(row) 
   siret, name, a, b, c, d = row
   address = [a,b,c,d].join(' ').strip
