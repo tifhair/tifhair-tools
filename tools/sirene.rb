@@ -64,13 +64,12 @@ CSV.foreach('/tmp/StockEtablissement_utf8.csv', headers:true) do |line|
   type = line['typeVoieEtablissement']
   rue = line['libelleVoieEtablissement']
   etat = line['etatAdministratifEtablissement']
-  db.execute("INSERT INTO Coiffeurs (siret, siren, name, date, codepostal, active, ville, numero_rue, voie) VALUES (?,?,?,?,?,?,?,?,?,?)",
+  db.execute("INSERT INTO Coiffeurs (siret, siren, name, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?,?)",
             siret,
             siret[0..8],
             name,
             date_creation,
             codepostal,
-            0,
             ville,
             numero_rue,
             [type, rue].join(' ').strip(),
