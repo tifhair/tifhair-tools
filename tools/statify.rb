@@ -209,7 +209,7 @@ SLIM1
 
   content << """
   p
-    | Plusieurs salons ont des noms en rapport avec la région:
+    | Plusieurs salons ont un nom en rapport avec la région:
     ul
       li
         a target='_blank' href='#{gmap_url("CORS'HAIR", db_get_addresse_by_name(db, "CORS'HAIR"))}'
@@ -264,7 +264,7 @@ SLIM1
 
   content << """
     p
-      | Pour finir, il semble que depuis le début de l'enregistrements des établissements dans la base de l'INSEE, aucun salon de coiffure ne se soit appelé:
+      | Pour finir, il semble que depuis le début de l'enregistrement des établissements dans la base de l'INSEE, aucun salon de coiffure ne se soit appelé:
       ul
         li
           | 'Apéritif'
