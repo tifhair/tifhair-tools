@@ -5,14 +5,6 @@ require "progressbar"
 STDOUT.sync = true
 
 dbfile = "coiffeurs.sqlite"
-db = SQLite3::Database.open(dbfile)
-
-if not File.exist?(dbfile)
-  db.transaction
-  db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, blague BOOL, etat TEXT);"
-  db.commit
-end
-
 
 def usage()
   puts "run sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv"
@@ -29,6 +21,21 @@ if not unite_file or not File.exist?(unite_file)
   usage
   exit
 end
+
+if File.exist?(dbfile)
+  raise "Le fichier #{dbfile} existe déjà"
+end
+
+if not File.exist?(dbfile)
+  db = SQLite3::Database.open(dbfile)
+  db.transaction
+  db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, blague BOOL, etat TEXT);"
+  db.commit
+  db.close()
+end
+
+db = SQLite3::Database.open(dbfile)
+
 
 $stderr.puts "Loading extra possible names from #{unite_file}"
 $stderr.puts "calculating number of lines to parse"
