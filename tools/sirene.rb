@@ -1,5 +1,6 @@
 require "csv"
 require "sqlite3"
+require "progressbar"
 
 STDOUT.sync = true
 
@@ -29,31 +30,38 @@ if not unite_file or not File.exist?(unite_file)
   exit
 end
 
-$stderr.puts "Loading extra possible names from #{unite_file}" 
+$stderr.puts "Loading extra possible names from #{unite_file}"
+$stderr.puts "calculating number of lines to parse"
+total = `wc -l "#{unite_file}"  | cut -d " " -f 1`.strip().to_i()
+progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 extra_names = {}
+i=0
 CSV.foreach(ARGV[0], headers:true) do |l|
+  i+=1
+  progressbar.progress += 10000 if i%10000 ==0
   next if l['activitePrincipaleUniteLegale'] != "96.02A"
   nom = l['denominationUsuelle1UniteLegale'] || l['denominationUsuelle2UniteLegale'] || l['denominationUsuelle3UniteLegale']
   next unless nom
   siren = l['siren']
   extra_names[siren] = nom
 end
+progressbar.finish
 
+$stderr.puts "Loading main SIRENE database from from #{etab_file}"
 $stderr.puts "calculating number of lines to parse"
 total = `wc -l "#{etab_file}"  | cut -d " " -f 1`.strip().to_i()
+progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 
-i = 0
+i=0
 CSV.foreach(etab_file, headers:true) do |line|
   i+=1
-  if i%10000 == 0
-    $stderr.puts "\r #{i}/#{total} (#{100*i/total}%)\r"
-  end
+  progressbar.progress += 10000 if i%10000 ==0
   activite = line["activitePrincipaleEtablissement"]
   next unless activite
   next unless activite.start_with?("96.02A")
   name = (line["enseigne1Etablissement"] || "").strip
   if name == ""
-    name = extra_names[siren[0..8]] 
+    name = extra_names[siren[0..8]]
   end
   next unless name
   siret = line["siret"]
@@ -77,3 +85,4 @@ CSV.foreach(etab_file, headers:true) do |line|
             )
 end
 
+progressbar.finish
