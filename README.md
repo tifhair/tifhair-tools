@@ -11,13 +11,13 @@ Outils utilisés pour générer le site [Tif'Hair](https://tif.hair).
 
 Télécherger les deux fichiers [StockEtablissement_utf8.zip](https://files.data.gouv.fr/insee-sirene/StockEtablissement_utf8.zip) et [StockUniteLegale_utf8.zip](https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip), qui se trouvent sur [https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/](https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/) 
 
-Une fois décompressés, lancer l'extraction (c'est long, la lib CSV de ruby n'est pas des plus efficaces):
+Une fois décompressés, lancer l'extraction (c'est long, la lib CSV de ruby n'est pas des plus efficaces, normalement moins d'une heure):
 
 ```
 ruby tools/sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv
 ```
 
-Puis faire une passe de résolution adresse => coordonnées GPS:
+Puis faire une passe de résolution adresse => coordonnées GPS (qui prendra probablement encore environ 1h):
 
 ```
 ruby tools/coords.rb coiffeurs.sqlite

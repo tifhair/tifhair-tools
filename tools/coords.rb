@@ -1,4 +1,5 @@
 require "geocoder"
+require "progressbar"
 require "sqlite3"
 
 $google=false
@@ -19,10 +20,9 @@ end
 
 
 db = SQLite3::Database.open(db_file)
-def update_with_google(row) 
-  siret, name, a, b, c, d = row
+def update_with_google(db, row)
+  siret,  a, b, c, d = row
   address = [a,b,c,d].join(' ').strip
-  puts name
   res = Geocoder.search(address)[0]
   if res
     lat = res.data["geometry"]["location"]["lat"]
@@ -36,10 +36,9 @@ def update_with_google(row)
   end
 end
 
-def update_with_gouvfr(row)
-  siret, name, a, b, c, d = row
+def update_with_gouvfr(db, row)
+  siret, a, b, c, d = row
   address = [a,b,c,d].join(' ').strip
-  puts name
   res = Geocoder.search(address)[0]
   if res
     lng, lat =  res.data['features'][0]['geometry']['coordinates']
@@ -47,15 +46,16 @@ def update_with_gouvfr(row)
   end
 end
 
-coiffeurs = db.execute("SELECT siret, name, numero_rue, voie, codepostal, ville FROM Coiffeurs WHERE etat='A' AND lat IS NULL")
+coiffeurs = db.execute("SELECT siret, numero_rue, voie, codepostal, ville FROM Coiffeurs WHERE etat='A' AND lat IS NULL")
 total = coiffeurs.size()
-done = 0
+progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 coiffeurs.each do |row|
+  progressbar.increment
+
   if $google
-    update_with_google(row)
+    update_with_google(db, row)
   else
-    update_with_gouvfr(row)
+    update_with_gouvfr(db, row)
   end
-  done+=1
-  puts "#{done}/#{total} : #{done*100/total}"
 end
+progressbar.finish
