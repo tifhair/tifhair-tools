@@ -5,9 +5,12 @@ div class="about"
     ' Ce site répertorie les établissements de coiffure (indiqués par le code 
     a href="https://www.insee.fr/fr/metadonnees/nafr2/sousClasse/96.02A"
       | Nomenclature d'Activité Française 96.02A
-    '  dont les noms contiennent
+    ' ) dont les noms contiennent
     strong
       | 'coif'
+    ', 
+    strong
+      | 'mèche'
     ', 
     strong
       | 'tif'
@@ -37,12 +40,12 @@ div class="about"
     |. La première base contient l'intégralité des entreprises et établissements. Toutefois certains noms d'établissements n'y apparaissent pas et la deuxième base est nécessaire pour en trouver des informations plus récentes.
 
   p
-    | Malgré tout ceci, il semble que beaucoup de différences existent entre les bases INSEE et la "réalité" (telle que par exemple Google Maps permet d'explorer). Soit parceque les établissements ont fermé ou changé de nom depuis la date d'export de la base (1er aout 2021), soit parceque certaines entreprises déclarées sont domiciliées dans une zone résidentielle, sans réel établissement (par exemple: les coiffeurs à domicile).
+    | Malgré tout ceci, il semble que beaucoup de différences existent entre les bases INSEE et la "réalité" (telle que par exemple Google Maps permet d'explorer). Soit parce que les établissements ont fermé ou changé de nom depuis la date d'export de la base (1er août 2021), soit parce que certaines entreprises déclarées sont domiciliées dans une zone résidentielle, sans réel établissement (par exemple: les coiffeurs à domicile).
 
   h3
     | Méthodologie
   p
-    | Pour la sélection des noms à blague, parmis les 46000+ établissement de la base INSEE, une première passe consiste à sélectionner ceux dont le nom contiennent une de ces chaines de caractère: 
+    | Pour la sélection des noms à blague, parmis les 46000+ établissement de la base INSEE, une première passe consiste à sélectionner ceux dont le nom contiennent une de ces chaînes de caractère: 
     code
       | hair
     |, 
@@ -54,7 +57,7 @@ div class="about"
     |, 
     code
       | mech
-    |, ce qui réduit le compte à ~5700, puis de manuellement filtrer ceux qui contiennent effectivement un jeu de mots (et eliminer les nombreux "Hair Fashion" et autres "Hair Instituts, etc.), ce qui réduit la liste à ~4000. Ce traitement étant manuel, des oublis ont pu être faits sur des calembours les moins évidents... Pour cette étape, le script 
+    |, ce qui réduit le compte à ~5700, puis de manuellement filtrer ceux qui contiennent effectivement un jeu de mots (et éliminer les nombreux "Hair Fashion" et autres "Hair Instituts, etc.), ce qui réduit la liste à ~4000. Ce traitement étant manuel, des oublis ont pu être faits sur des calembours les moins évidents... Pour cette étape, le script 
     code 
       a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/blague.rb"
         | blague.rb
@@ -67,7 +70,7 @@ div class="about"
     | . Un 
     a href="http://www.coiff-emoi-tremblay.com/"
       |salon de Seine-Saint-Denis
-    | s'appelle par exemple "Coiff'Emoi". Toutefois, un très grand nombre de coiffeurs ont cette chaine de caractère dans leur nom (plus de 21000), dont la plupart ne contiennent aucun jeu de mot particulier, ce qui rendrait un traitement manuel particulièrement fastidieux. 
+    |  s'appelle par exemple "Coiff'Emoi". Toutefois, un très grand nombre de coiffeurs ont cette chaine de caractère dans leur nom (plus de 21000), dont la plupart ne contiennent aucun jeu de mot particulier, ce qui rendrait un traitement manuel particulièrement fastidieux. 
   p
     | Dans les exemples de noms amusants, si plusieurs établissements ont le même nom, un d'entre eux sera pris au hasard lors de la génération du site.
 
@@ -80,11 +83,11 @@ div class="about"
         | sirene.rb
     |  pour construire le fichier
     code
-      | coiffeurs.sqlite
+      |  coiffeurs.sqlite
     |  Ce script filtre les entrées du fichier 
     code
       | /tmp/StockEtablissement_utf8.csv
-    | pour en extraire les établissements de coiffure, et d'autres informations concernant leur nom et addresse.
+    |  pour en extraire les établissements de coiffure, et d'autres informations concernant leur nom et adresse.
 
   p
     | Pour obtenir les coordonnées latitude/longitude à partir de l'adresse, il faut ensuite utiliser un service de geocoding. J'utilise ici la librairie
@@ -96,7 +99,7 @@ div class="about"
     |  ainsi qu'aux API de 
     a href="https://developers.google.com/maps/documentation/geocoding/overview"
       |  Google
-    |  qui, elles, necessitent une clé API.
+    |  qui, elles, nécessitent une clé API.
 
   p
     | Le script 
@@ -107,7 +110,7 @@ div class="about"
     |  permet d'utiliser ces APIs. Lancer d'abord  
     code
       | ruby coords.rb
-    |  pour mettre à jour le plus d'adresse avec l'API etalab, puis (apres avoir mis à jour le fichier 
+    |  pour mettre à jour le plus d'adresse avec l'API etalab, puis (après avoir mis à jour le fichier 
     code
       | .api_key  
     |  avec votre clé API, lancer 
@@ -116,7 +119,7 @@ div class="about"
     |  pour obtenir le coordonnées des adresses qui n'ont pas pu être résolues avec l'etalab.
 
   p
-    | Pour des soucis de performance, la totalité de la base de données est ensuite exportée au format geojson pour être utilisé par les cartes Leaflets ci-dessus.
+    | Pour des soucis de performance, la totalité de la base de données est ensuite exportée au format geojson pour être utilisée par les cartes Leaflets ci-dessus.
     |  Le script 
     code
       a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/statify.rb"
