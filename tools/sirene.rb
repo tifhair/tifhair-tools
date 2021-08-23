@@ -40,10 +40,10 @@ CSV.foreach(ARGV[0], headers:true) do |l|
 end
 
 $stderr.puts "calculating number of lines to parse"
-total = `wc -l /tmp/StockEtablissement_utf8.csv  | cut -d " " -f 1`.strip().to_i()
+total = `wc -l "#{etab_file}"  | cut -d " " -f 1`.strip().to_i()
 
 i = 0
-CSV.foreach('/tmp/StockEtablissement_utf8.csv', headers:true) do |line|
+CSV.foreach(etab_file, headers:true) do |line|
   i+=1
   if i%10000 == 0
     $stderr.puts "\r #{i}/#{total} (#{100*i/total}%)\r"
