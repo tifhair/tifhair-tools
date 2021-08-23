@@ -154,6 +154,7 @@ div.about ul {
 }
 div.about ul li {
     list-style: square;
+    font-size: 1.2rem;
 }
 
 div.palmares {
@@ -173,4 +174,5 @@ div.palmares ul {
 }
 div.palmares ul li {
     list-style: square;
+    font-size: 1.2rem;
 }
