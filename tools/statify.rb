@@ -156,7 +156,7 @@ SLIM1
     ["Bulles d'hair", "%bull%d%air%"],
     ["caract'hair",   "%ara%t%hair%"],
   ].each do |n,r|
-    content << "      li\n        |Il y a #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs qui avec un dérivé de \"#{n}\"\n"
+    content << "      li\n        |Il y a #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs avec un nom dérivé de \"#{n}\"\n"
   end
 
   content << """
