@@ -60,11 +60,11 @@ CSV.foreach(etab_file, headers:true) do |line|
   next unless activite
   next unless activite.start_with?("96.02A")
   name = (line["enseigne1Etablissement"] || "").strip
+  siret = line["siret"]
   if name == ""
-    name = extra_names[siren[0..8]]
+    name = extra_names[siret[0..8]]
   end
   next unless name
-  siret = line["siret"]
   codepostal = line["codePostalEtablissement"]
   date_creation = line["dateCreationEtablissement"]
   ville = line['libelleCommuneEtablissement']
