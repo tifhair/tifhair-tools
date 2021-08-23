@@ -17,19 +17,19 @@ var getJSON = function(url, callback) {
 };
 
 function getDeptColor(blag) {
-    if (blag < 4)
+    if (blag < 2)
         return "#fff7ec";
-    if (blag < 5)
+    if (blag < 3)
         return "#fee8c8";
-    if (blag < 6)
+    if (blag < 4)
         return "#fdd49e";
-    if (blag < 7)
+    if (blag < 5)
         return "#fdbb84";
-    if (blag < 8)
+    if (blag < 6)
         return "#fc8d59";
-    if (blag < 9)
+    if (blag < 7)
         return "#ef6548";
-    if (blag < 10)
+    if (blag < 8)
         return "#d7301f";
     return "#990000";
 }
@@ -56,7 +56,7 @@ function showDeptGeoJSON(data) {
 
 	legend.onAdd = function (map) {
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [3, 4, 5, 6, 7, 8, 9, 10];
+			grades = [2, 3, 4, 5, 6, 7, 8, 9];
 			labels = [];
 
 		div.innerHTML+="<p>Pourcentage de blagueurs</p>"
