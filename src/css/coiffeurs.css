@@ -55,7 +55,7 @@ section {
 section#globalmap {
     display: grid;
     grid-auto-columns: 2fr 1fr;
-    grid-template-rows: 30px 30px calc(100vh - 30px);
+    grid-template-rows: 30px 30px calc(60vh - 30px);
     grid-gap: 1rem;
 }
 

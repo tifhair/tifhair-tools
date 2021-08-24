@@ -90,6 +90,15 @@ function showCoiffeursGeoJSON(data) {
         }
     });
 
+    var legend = L.control({position: 'bottomleft'});
+
+	legend.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML+="<p>Cliquez sur le marqueur pour un lien Google Maps</p>";
+		return div;
+    }
+	legend.addTo(map);
+
     var geoJsonLayer = L.geoJSON(data, {
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties.markerinnerhtml);
