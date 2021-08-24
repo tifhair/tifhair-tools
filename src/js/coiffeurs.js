@@ -1,4 +1,12 @@
 var map = L.map('mapid').setView([48.50, 2.29], 4);
+var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML+="<p>Cliquez sur le marqueur pour un lien Google Maps</p>";
+    return div;
+}
+legend.addTo(map);
 var deptmap = L.map('deptmap').setView([48.50, 2.29], 6);
 
 var getJSON = function(url, callback) {
@@ -90,14 +98,6 @@ function showCoiffeursGeoJSON(data) {
         }
     });
 
-    var legend = L.control({position: 'bottomleft'});
-
-	legend.onAdd = function (map) {
-		var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML+="<p>Cliquez sur le marqueur pour un lien Google Maps</p>";
-		return div;
-    }
-	legend.addTo(map);
 
     var geoJsonLayer = L.geoJSON(data, {
         onEachFeature: function (feature, layer) {
