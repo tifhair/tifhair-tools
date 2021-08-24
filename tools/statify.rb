@@ -191,6 +191,11 @@ SLIM1
     "FAUDRA TIF HAIR",
     "LE BEST C L'HAIR",
     "ALT'HAIR  & GO",
+    "JENNY PEIGNE NI CISEAUX",
+    "COURT TOUJOURS",
+    "BOUCLE LA",
+    "PAUSE COIFFEE",
+    "COUPE DU MONDE",
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
@@ -297,6 +302,7 @@ SLIM1
     "CED'A TIF",
     "ADULT'HAIR",
     "MISSION HAIR",
+    "LE QUOI?FEUR"
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
@@ -313,6 +319,7 @@ SLIM1
     "PRINCE DE BEL HAIR",
     "PARTOUTA'TIF",
     "GIJHAIR",
+    "FACELOOK",
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
@@ -329,6 +336,7 @@ SLIM1
     "SAGIT HAIR",
     "REVOLVHAIR",
     "RECUP'HAIR",
+    "COUPE DU MONDE",
     "NUCL HAIR",
     "LA POUDRI'HAIR",
     "PETARD A MECHE",
@@ -342,6 +350,7 @@ SLIM1
     "COLOCAT'HAIR",
     "CLAFOU'TIFS",
     "BUENO S HAIR",
+    "SPACE INVHEADER",
     "BOUC ET MISS HAIR",
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
