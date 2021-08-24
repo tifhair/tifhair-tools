@@ -203,6 +203,10 @@ div.palmares ul li {
     list-style: square;
 /*    font-size: 1.2rem; */
 }
+div.references p {
+    margin-top: 10px;
+/*    font-size: 1.2rem; */
+}
 div.references ul li {
     list-style: square;
 /*    font-size: 1.2rem;*/

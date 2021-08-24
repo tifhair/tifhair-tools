@@ -302,7 +302,6 @@ SLIM1
     "CED'A TIF",
     "ADULT'HAIR",
     "MISSION HAIR",
-    "LE QUOI?FEUR"
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
