@@ -7,7 +7,7 @@
   z-index: 9999;
   width: 100%;
   height: 50px;
-  background-color: #00a087;
+  background-color: #fa0;
 }
 
 .content {
@@ -15,7 +15,7 @@
 }
 
 /* Example responsive navigation menu  */
-.fixed-nav-bar li, .fixed-nav-bar a { 
+.fixed-nav-bar li, .fixed-nav-bar a {
   height: 50px;
   line-height: 50px;
 }
@@ -67,7 +67,7 @@ a.sitename, a:visited.sitename {
 }
 
 @media only screen and (max-width: 800px) {
-  .menu { 
+  .menu {
     position: relative;
     width: 100%;
   }
@@ -78,7 +78,7 @@ a.sitename, a:visited.sitename {
     margin-left: 0px;
   }
   .menu-items {
-    display: none; 
+    display: none;
     width: 100%;
     margin-top: 50px;
     background-color: #008378;
@@ -87,7 +87,7 @@ a.sitename, a:visited.sitename {
     display: block;
     text-align: center;
   }
-  .show, .hide {  
+  .show, .hide {
     position: absolute;
     top: 0;
     right: 15px;

@@ -1,7 +1,12 @@
+*{
+    transition: all 0.3s ease-in;
+}
+
 html {
     font-family: 'Fira Sans', sans-serif;
     scroll-behavior: smooth;
     padding-bottom: 200px;
+    text-align: justify;
 }
 
 body {
@@ -25,7 +30,6 @@ h1 {
 }
 
 h2 {
-    margin-left: 20px;
     font-size: 1.5rem;
     font-weight: bold;
 }
@@ -35,9 +39,25 @@ h2:before {
 }
 
 h3 {
-    margin: 10px;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
     font-size: 1.3rem;
     font-weight: bold;
+}
+
+p{
+    line-height: 1.6rem;
+}
+
+a{
+    text-decoration: none;
+    color: #fa0;
+    padding: 0 0.25rem;
+}
+
+a:hover{
+    background: #fa0;
+    color: #fff;
 }
 
 .container {
@@ -88,9 +108,17 @@ input[type=search] {
 }
 
 #listecoiffeurs {
-    background: #efe;
+    background: #fee;
     letter-spacing: 0.03em;
-    padding: 1rem;
+    line-height: 1.6rem;
+}
+#listecoiffeurs li{
+    padding: 0.1rem 1rem;
+}
+
+#listecoiffeurs li:hover{
+    cursor: pointer;
+    background: #fa0;
 }
 
 aside{
@@ -133,12 +161,17 @@ a.button {
     -moz-appearance: button;
     appearance: button;
     text-decoration: none;
-    background-color: #4CAF50;
+    background-color: #fa0;
     border: none;
     color: white;
     text-align: center;
-    padding: 5px;
+    padding: 0.25rem 0.3rem;
     display: inline-block;
+}
+
+a.button:hover{
+    box-shadow: 0 0 2px 0px #fa0;
+    transform: scale(1.025);
 }
 
 .legend {
@@ -169,45 +202,39 @@ a.button {
 @media (min-width: 768px) {
     .about, .palmares {
         column-count:  2;
+        column-gap: 3rem;
+    }
+
+    .about h3, .palmares h3{
+        column-span: all;
+        padding-bottom: 0.5rem;
+        box-shadow: inset 0 -1px 0 0 #fa0;
     }
 }
 
-div.about p {
-    margin-top: 10px;
+.about p {
+    margin-bottom: 1rem;
 /*    font-size: 1.2rem;*/
 }
 
-div.about code {
-    background-color: #eeeeee;
+.about code {
+    background-color: #eee;
 }
-div.about ul {
-    margin-left: 20px;
-}
-div.about ul li {
+.about ul, .palmares ul, .references ul {
+    padding-left: 20px;
     list-style: square;
-/*    font-size: 1.2rem;*/
 }
 
-div.palmares p {
-    margin-top: 10px;
-/*    font-size: 1.2rem; */
+
+.palmares p {
+    margin-top: 1rem;
 }
 
-div.palmares code {
-    background-color: #eeeeee;
+.palmares code {
+    background-color: #eee;
 }
-div.palmares ul {
-    margin-left: 20px;
-}
-div.palmares ul li {
-    list-style: square;
-/*    font-size: 1.2rem; */
-}
-div.references p {
+
+.references p {
     margin-top: 10px;
 /*    font-size: 1.2rem; */
-}
-div.references ul li {
-    list-style: square;
-/*    font-size: 1.2rem;*/
 }
