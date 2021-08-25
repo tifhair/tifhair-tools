@@ -72,7 +72,7 @@ CSV.foreach(etab_file, headers:true) do |line|
   activite = line["activitePrincipaleEtablissement"]
   next unless activite
   next unless activite.start_with?("96.02A")
-  name = (line["enseigne1Etablissement"] || "").strip
+  name = (line["enseigne1Etablissement"] || line["enseigne2Etablissement"] || line["enseigne3Etablissement"] || line["denominationUsuelleEtablissement"] || "").strip
   siret = line["siret"]
   if name == ""
     name = extra_names[siret[0..8]]
