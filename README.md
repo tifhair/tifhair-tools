@@ -14,7 +14,8 @@ Télécherger les deux fichiers [StockEtablissement_utf8.zip](https://files.data
 Une fois décompressés, lancer l'extraction (c'est long, la lib CSV de ruby n'est pas des plus efficaces, normalement moins d'une heure):
 
 ```
-ruby tools/sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv
+{ head -n1 StockEtablissement_utf8.csv & grep 96.02A StockEtablissement_utf8.csv; } > coiffeurs.csv
+ruby tools/sirene.rb coiffeurs.csv StockUniteLegale_utf8.csv
 ```
 
 Puis faire une passe de résolution adresse => coordonnées GPS (qui prendra probablement encore environ 1h):
