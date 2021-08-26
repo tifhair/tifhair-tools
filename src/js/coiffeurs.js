@@ -1,5 +1,10 @@
-var map = L.map('mapid').setView([48.50, 2.29], 4);
+var map = L.map('mapid', {
+    zoomControl: false
+});
+map.setView([48.50, 2.29], 4);
+map.attributionControl.setPosition('topright');
 var legend = L.control({position: 'bottomleft'});
+
 
 legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
