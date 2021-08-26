@@ -149,14 +149,24 @@ div class='palmares'
     ul
 
 SLIM1
+
 [
-    ["caract'hair", "%ara%t%hair%"],
-    ["Atmosp'hair",   "%atmos%air%"],
     ["Imagin'hair",   "%imagin%air%"],
     ["Bulles d'hair", "%bull%d%air%"],
-    ["caract'hair",   "%ara%t%hair%"],
+    ["Atmosp'hair",   "%atmos%air%"],
+    ["Caract'hair",   "%ara%t%hair%"],
+    ["Planet'hair",   "%planet%hair%"],
   ].each do |n,r|
     content << "      li\n        |Il y a #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs avec un nom dérivé de \"#{n}\"\n"
+  end
+[
+    ["Diminu'tif",   "%diminu%tif%"],
+    ["Evolu'tif",    "%evolu%tif%"],
+    ["Infini'tif",   "%infini%tif%"],
+    ["Imagina'tif",  "%imagi%na%tif%"],
+    ["Instinc'tif",  "%instin%tif%"],
+  ].each do |n,r|
+    content << "      li\n        |On trouve #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs avec un nom similaire à \"#{n}\"\n"
   end
 
   content << """

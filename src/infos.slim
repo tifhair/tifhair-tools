@@ -89,6 +89,7 @@ div class="about"
     code
       | /tmp/StockEtablissement_utf8.csv
     |  pour en extraire les établissements de coiffure, et d'autres informations concernant leur nom et adresse.
+    | Le problème avec cette approche est qu'il est possible que le nom principal ('enseigne1Etablissement' dans la base SIRENE) soit renseigné mais non utilisé par l'établissement. Ce nom est parfois renseigné dans 'denominationUsuelleEtablissement'. À cause de cela, certaines enseignes peuvent manquer dans la base, ou apparaître sous d'autres noms.
 
   p
     | Pour obtenir les coordonnées latitude/longitude à partir de l'adresse, il faut ensuite utiliser un service de geocoding. J'utilise ici la librairie
