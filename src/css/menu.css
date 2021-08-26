@@ -51,6 +51,10 @@ a.sitename, a:visited.sitename {
 .menu-items a {
   text-decoration: none;
 }
+
+.menu-items img {
+  margin-top: 10px;
+}
 .show, .hide {
   display: none;
   padding-left: 15px;
