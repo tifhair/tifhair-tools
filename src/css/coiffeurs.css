@@ -173,6 +173,13 @@ aside{
     aside#asideresults {
         overflow: hidden;
     }
+    #listecoiffeurs li span {
+        display:none;
+    }
+    #listecoiffeurs li b{
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
 }
 
 aside p {

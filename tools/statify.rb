@@ -64,7 +64,7 @@ def make_json(db_file, dest_dir, filter)
         "ville" => ville,
         "codepostal" => codepostal,
         "markerinnerhtml" => make_marker_html(nom, addresse),
-        "liinnerhtml" => "<b>#{nom}</b>, #{ville} (#{codepostal})",
+        "liinnerhtml" => "<b>#{nom}</b><span>, #{ville} (#{codepostal})</span>",
         "addresse"=> addresse
       },
       "geometry"=> {
