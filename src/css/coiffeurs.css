@@ -135,8 +135,6 @@ aside{
     h1 {
         font-size: 2.5rem;
     }
-    #mapid {
-    }
     section#globalmap {
         display: grid;
         grid-auto-columns: 1fr;
@@ -225,16 +223,6 @@ a.button:hover{
     list-style: square;
 }
 
-
-.palmares p {
-    margin-top: 1rem;
-}
-
 .palmares code {
     background-color: #eee;
-}
-
-.references p {
-    margin-top: 10px;
-/*    font-size: 1.2rem; */
 }
