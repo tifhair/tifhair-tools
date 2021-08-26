@@ -8,7 +8,7 @@ html lang="fr"
     link rel="icon" type=="image/png" sizes="32x32" href="/pics/favicon-32x32.png"
     link rel="preconnect" href="https://fonts.googleapis.com"
     link rel="preconnect" href="https://fonts.gstatic.com"
-    link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@200;400;700&display=swap" rel="stylesheet"
+    link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;700&display=swap" rel="stylesheet"
     link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css"
     link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""
     link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"
@@ -19,81 +19,80 @@ html lang="fr"
     script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"
 
   body
-    div class="container"
-      include menu.slim
+    include menu.slim
 
-      h1
-        | Les coiffeurs sont des blagueurs
-      section id="globalmap"
-        h2
-          | Carte globale
-        div class="filters"
-          label
-            | Filter par Nom:
-            input class="filter" id="filter_name" type="search" placeholder="Établissement"
-          label
-            | Filter par Departement:
-            select id="filter_dept" class="filter"
-              option value="*" selected="selected"
-                  | *
-              - for i in ('01'..'95')
-                option value="#{i}"
-                  | #{i}
-              option value="97"
-                  | 97
-          label
-            | Filter par Ville:
-            input class="filter" id="filter_ville" type="search" placeholder="Ville"
-        div id="mapid"
-        aside id="asideresults"
-          p id="resultcount"
-          button id="read_more" class="read_more"
-            | Afficher plus
-          ul id="listecoiffeurs" title="Cliquez pour zoomer!"
-      section id="stats"
-        h2
-          | Statistiques et palmarès
-        include stats.slim
+    h1
+      | Les coiffeurs sont des blagueurs
+    section id="globalmap"
+      h2
+        | Carte globale
+      div class="filters"
+        label
+          | Filter par Nom:
+          input class="filter" id="filter_name" type="search" placeholder="Établissement"
+        label
+          | Filter par Departement:
+          select id="filter_dept" class="filter"
+            option value="*" selected="selected"
+                | *
+            - for i in ('01'..'95')
+              option value="#{i}"
+                | #{i}
+            option value="97"
+                | 97
+        label
+          | Filter par Ville:
+          input class="filter" id="filter_ville" type="search" placeholder="Ville"
+      div id="mapid"
+      aside id="asideresults"
+        p id="resultcount"
+        button id="read_more" class="read_more"
+          | Afficher plus
+        ul id="listecoiffeurs" title="Cliquez pour zoomer!"
+    section id="stats"
+      h2
+        | Statistiques et palmarès
+      include stats.slim
 
-      section id="dmap"
-        h2
-          | Stats par département
-        div id="deptmap"
+    section id="dmap"
+      h2
+        | Stats par département
+      div id="deptmap"
+      p
+        | Pour l'ensemble du pays, cela donne  
+        b
+          |8.8% 
+        |  d'enseignes (en activité) avec des blagues.
+    section id="about"
+      h2
+        | Informations & Méthodologie
+      include infos.slim
+
+    section id="references"
+      h2
+        | Références
+      div class="references"
         p
-          | Pour l'ensemble du pays, cela donne  
-          b
-            |8.8% 
-          |  d'enseignes (en activité) avec des blagues.
-      section id="about"
-        h2
-          | Informations & Méthodologie
-        include infos.slim
-
-      section id="references"
-        h2
-          | Références
-        div class="references"
-          p
-            | Le sujet a déjà été traité dans divers endroits:
-            ul
-              li
-                a href="https://www.instagram.com/lolcoiffeur/"
-                  | Instagram 'lolcoiffeur'
-              li
-                a href="https://lolcoiffeurs.tumblr.com/"
-                  | Tumblr 'LOLcoiffeur'
-              li
-                a href="https://www.amazon.fr/Tir%C3%A9-par-cheveux-enseignes-d%C3%A9coiffent/dp/2842306198"
-                  | Tiré par les cheveux: Des enseignes qui décoiffent Broché – Illustré, 17 mai 2018
-              li
-                a href="https://www.lemonde.fr/les-decodeurs/article/2016/11/29/hair-et-tif-des-noms-de-salons-qui-defrisent_5040180_4355770.html"
-                  | « Hair » et « tif », des noms de salons de coiffure qui défrisent, LeMonde Publié le 29 novembre 2016 à 12h34
-          p
-            | Faites également attention aux fakes!
-            ul
-              li
-                a href="https://www.francebleu.fr/infos/insolite/non-il-n-y-pas-de-salon-de-coiffure-adolf-hitl-hair-strasbourg-1460971142"
-                  | Non, il n'y a pas de salon de coiffure "Adolf Hitl'hair" à Strasbourg, FranceBleu (18 avril 2016)
+          | Le sujet a déjà été traité dans divers endroits:
+          ul
+            li
+              a href="https://www.instagram.com/lolcoiffeur/"
+                | Instagram 'lolcoiffeur'
+            li
+              a href="https://lolcoiffeurs.tumblr.com/"
+                | Tumblr 'LOLcoiffeur'
+            li
+              a href="https://www.amazon.fr/Tir%C3%A9-par-cheveux-enseignes-d%C3%A9coiffent/dp/2842306198"
+                | Tiré par les cheveux: Des enseignes qui décoiffent Broché – Illustré, 17 mai 2018
+            li
+              a href="https://www.lemonde.fr/les-decodeurs/article/2016/11/29/hair-et-tif-des-noms-de-salons-qui-defrisent_5040180_4355770.html"
+                | « Hair » et « tif », des noms de salons de coiffure qui défrisent, LeMonde Publié le 29 novembre 2016 à 12h34
+        p
+          | Faites également attention aux fakes!
+          ul
+            li
+              a href="https://www.francebleu.fr/infos/insolite/non-il-n-y-pas-de-salon-de-coiffure-adolf-hitl-hair-strasbourg-1460971142"
+                | Non, il n'y a pas de salon de coiffure "Adolf Hitl'hair" à Strasbourg, FranceBleu (18 avril 2016)
 
 
 

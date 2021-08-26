@@ -6,7 +6,16 @@ html {
     font-family: 'Fira Sans', sans-serif;
     scroll-behavior: smooth;
     padding-bottom: 200px;
-    text-align: justify;
+    background: #fafafa;
+}
+@media (min-width: 768px) {
+    html{
+        text-align: justify;
+    }
+    h2 {
+        letter-spacing: 0.5rem;
+        font-weight: 300;
+    }
 }
 
 body {
@@ -30,8 +39,13 @@ h1 {
 }
 
 h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: #fa0;
+}
+
+#globalmap h2{
+    margin-top: 0;
 }
 
 h2:before {
@@ -60,25 +74,22 @@ a:hover{
     color: #fff;
 }
 
-.container {
-    width: 80vw;
-    margin: 10px auto;
-}
-
-
 section {
-    margin-top: -4rem;
+    padding: 2rem;
+    width: 80vw;
+    margin: 5rem auto;
+    background: #fff;
+    box-shadow: 1px 1px 5px 0 #ddd;
     padding-top: 4rem;
-    padding-bottom: 3rem;
+    margin-top: -2rem;
 }
 
 section#globalmap {
     display: grid;
     grid-auto-columns: 2fr 1fr;
-    grid-template-rows: 30px 30px calc(60vh - 30px);
+    grid-template-rows: 70px 30px calc(60vh - 30px);
     grid-gap: 1rem;
 }
-
 
 #mapid {
     background: #fee;
@@ -102,6 +113,9 @@ section#dmap {
     grid-template-rows: 30px calc(100vh - 30px);
     grid-gap: 1rem;
 }
+section div#deptmap {
+    margin-top: 2rem;
+}
 
 input[type=search] {
     margin: 5px;
@@ -114,6 +128,12 @@ input[type=search] {
 }
 #listecoiffeurs li{
     padding: 0.1rem 1rem;
+    font-weight: 300;
+    font-size: 0.8rem;
+}
+#listecoiffeurs li b{
+    font-weight: 800;
+    font-size: 1rem;
 }
 
 #listecoiffeurs li:hover{
@@ -127,18 +147,23 @@ aside{
 
 @media (max-width: 768px) {
     body {
-        padding-top: 2.5rem;
-    }
-    .container {
-        width: 90vw;
+        padding-top: 3.5rem;
     }
     h1 {
         font-size: 2.5rem;
     }
+    h2 {
+        font-size: 1.8rem;
+    }
+    section {
+        padding-top:2rem;
+        padding: 1rem;
+        width: 90vw;
+    }
     section#globalmap {
         display: grid;
         grid-auto-columns: 1fr;
-        grid-template-rows: 30px 100px calc(100vh - 130px);
+        grid-template-rows: 30px 140px calc(100vh - 130px);
     }
     section#globalmap div.filters label{
         display: block;
@@ -197,6 +222,12 @@ a.button:hover{
     color: #777;
 }
 
+@media(max-width: 768px) {
+    .info h4 {
+        font: 12px Arial, Helvetica, sans-serif;
+    }
+}
+
 @media (min-width: 768px) {
     .about, .palmares {
         column-count:  2;
@@ -208,11 +239,18 @@ a.button:hover{
         padding-bottom: 0.5rem;
         box-shadow: inset 0 -1px 0 0 #fa0;
     }
+
+
+}
+
+@media (min-width: 1024px) {
+    .palmares p+ul{
+        column-count: 2;
+    }
 }
 
 .about p {
     margin-bottom: 1rem;
-/*    font-size: 1.2rem;*/
 }
 
 .about code {
@@ -221,6 +259,16 @@ a.button:hover{
 .about ul, .palmares ul, .references ul {
     padding-left: 20px;
     list-style: square;
+    font-weight: 300;
+}
+
+.palmares ul{
+    margin-bottom: 2.5rem;
+}
+
+.palmares ul a{
+/*    text-transform: lowercase; */
+    font-weight: 600;
 }
 
 .palmares code {
