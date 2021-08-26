@@ -270,7 +270,7 @@ SLIM1
 
   content << """
   p
-    | Les informaticiens ne sont pas en reste avec
+    | Les informaticiens ne sont pas en reste avec:
     ul
 """
   [
