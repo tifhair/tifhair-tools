@@ -145,8 +145,7 @@ def build_stats(db_file, slim_file)
 div class='palmares'
   h3
     | D'abord quelques chiffres:
-  p
-    ul
+  ul
 
 SLIM1
 
@@ -157,7 +156,16 @@ SLIM1
     ["Caract'hair",   "%ara%t%hair%"],
     ["Planet'hair",   "%planet%hair%"],
   ].each do |n,r|
-    content << "      li\n        |Il y a #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs avec un nom dérivé de \"#{n}\"\n"
+    content << 
+"""
+    li
+      | Il y a 
+      strong
+"""
+    content << "        | #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")}\n"
+    content << "      |  salons actifs avec un nom dérivé de \n"
+    content << "      strong\n"
+    content << "        | #{n}\n"
   end
 [
     ["Diminu'tif",   "%diminu%tif%"],
@@ -166,7 +174,16 @@ SLIM1
     ["Imagina'tif",  "%imagi%na%tif%"],
     ["Instinc'tif",  "%instin%tif%"],
   ].each do |n,r|
-    content << "      li\n        |On trouve #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")} salons actifs avec un nom similaire à \"#{n}\"\n"
+    content << 
+"""
+    li
+      | On trouve 
+      strong
+"""
+    content << "        | #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")}\n"
+    content << "      |  salons actifs avec un nom smiliaire à \n"
+    content << "      strong\n"
+    content << "        | #{n}\n"
   end
 
   content << """
