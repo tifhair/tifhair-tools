@@ -305,7 +305,6 @@ SLIM1
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
 
-
   content << """
   p
     | Plusieurs salons ont un nom en rapport avec la région:
@@ -318,6 +317,10 @@ SLIM1
         a target='_blank' href='#{gmap_url("FINIST'HAIR", db_get_addresse_by_name(db, "FINIST'HAIR"))}'
           | FINIST'HAIR
         |  en Bretagne
+      li
+        a target='_blank' href='#{gmap_url("LOZ'HAIR COIFFURE", db_get_addresse_by_name(db, "LOZ'HAIR COIFFURE"))}'
+          | LOZ'HAIR COIFFURE
+        |  évidemment, en Lozère
 """
 
   content << """
