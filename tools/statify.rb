@@ -340,12 +340,14 @@ SLIM1
 """
   [
     "ABRARACOUR 'TIFS",
+    "BLADE RUNHAIR",
     "TIFS ET TONDU",
     "SPEED'HAIR MAN",
     "PRINCE DE BEL HAIR",
     "PARTOUTA'TIF",
     "GIJHAIR",
     "FACELOOK",
+    "TWITT'HAIR"
   ].each do |n|
     content << "      li\n        a target='_blank' href='#{gmap_url(n, db_get_addresse_by_name(db, n))}'\n         | #{n}\n"
   end
