@@ -18,7 +18,7 @@ if ARGV.size==2
   $google=true
   Geocoder.configure(
     lookup: :google,
-    api_key: File.read([ARGV[1]]).strip()
+    api_key: File.read(ARGV[1]).strip()
   )
 else
   Geocoder.configure(
