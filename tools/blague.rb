@@ -25,6 +25,8 @@ db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%univ%hair%'")
 db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%de meche avec%'")
 db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%beautiful%'")
 db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%racine%carr%'")
+db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%au%long%court%'")
+db.execute("UPDATE Coiffeurs set blague=1 WHERE name LIKE '%O%long%court%'")
 
 
 i=0
