@@ -181,7 +181,7 @@ SLIM1
       strong
 """
     content << "        | #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")}\n"
-    content << "      |  salons actifs avec un nom smiliaire à \n"
+    content << "      |  salons actifs avec un nom similaire à \n"
     content << "      strong\n"
     content << "        | #{n}\n"
   end
