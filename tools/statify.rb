@@ -181,7 +181,7 @@ SLIM1
       strong
 """
     content << "        | #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")}\n"
-    content << "      |  salons actifs avec un nom smiliaire à \n"
+    content << "      |  salons actifs avec un nom similaire à \n"
     content << "      strong\n"
     content << "        | #{n}\n"
   end
@@ -402,7 +402,7 @@ SLIM1
 
   content << """
   p
-    | En listant les mots utilisés par chaque établissement, trié par ordre d'apparition, et filtré sur le champs lexical de la coiffure a également permis de déterrer quelsques perles comme:
+    | En listant les mots utilisés par chaque établissement, trié par ordre d'apparition, et filtré sur le champs lexical de la coiffure a également permis de déterrer quelques perles comme:
     ul
 """
   [
