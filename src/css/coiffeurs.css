@@ -268,7 +268,7 @@ a.button:hover{
 .about code {
     background-color: #eee;
 }
-.about ul, .palmares ul, .references ul {
+.about ul, .palmares ul, .references ul, .changelog ul  {
     padding-left: 20px;
     list-style: square;
     font-weight: 300;
