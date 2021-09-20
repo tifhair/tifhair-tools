@@ -8,7 +8,7 @@ var legend = L.control({position: 'bottomleft'});
 
 legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
-    div.innerHTML+="<p>Cliquez sur un marqueur pour le lien Google Maps</p>";
+    div.innerHTML+="<p>Cliquez sur un marqueur pour voir la devanture sur Google Maps</p>";
     return div;
 }
 legend.addTo(map);

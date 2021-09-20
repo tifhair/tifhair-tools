@@ -87,7 +87,7 @@ def gmap_url(nom, addresse)
 end
 
 def make_marker_html(nom, addresse)
-  return "<p><b>#{nom}</b></p><p><a class='button' target='_blank' href='#{gmap_url(nom, addresse)}'>Ouvrir dans Google Maps</a></p>"
+  return "<p><b>#{nom}</b></p><p><a class='button' target='_blank' href='#{gmap_url(nom, addresse)}'>Voir la devanture via Google Maps</a></p>"
 end
 
 def slimify(slim_template, dest, params=nil)
