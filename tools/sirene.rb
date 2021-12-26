@@ -37,7 +37,7 @@ end
 db = SQLite3::Database.open(dbfile)
 
 
-$stderr.puts "Loading extra possible names from #{unite_file}"
+$stderr.puts "Loading extra possible names from #{unite_file} 1/2"
 $stderr.puts "calculating number of lines to parse"
 total = `wc -l "#{unite_file}"  | cut -d " " -f 1`.strip().to_i()
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
@@ -57,7 +57,7 @@ CSV.foreach(ARGV[0], headers:true) do |l|
 end
 progressbar.finish
 
-$stderr.puts "Loading main SIRENE database from from #{etab_file}"
+$stderr.puts "Loading main SIRENE database from from #{etab_file} 2/2"
 $stderr.puts "calculating number of lines to parse"
 total = `wc -l "#{etab_file}"  | cut -d " " -f 1`.strip().to_i()
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
