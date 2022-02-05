@@ -43,7 +43,7 @@ total = `wc -l "#{unite_file}"  | cut -d " " -f 1`.strip().to_i()
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 extra_names = {}
 i=0
-CSV.foreach(ARGV[0], headers:true) do |l|
+CSV.foreach(unite_file, headers:true) do |l|
   i+=1
   begin
     progressbar.progress += 10000 if i%10000 ==0
@@ -85,7 +85,7 @@ CSV.foreach(etab_file, headers:true) do |line|
   type = line['typeVoieEtablissement']
   rue = line['libelleVoieEtablissement']
   etat = line['etatAdministratifEtablissement']
-  db.execute("INSERT INTO Coiffeurs (siret, siren, name, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?,?)",
+  db.execute("INSERT INTO Coiffeurs (siret, siren, name, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?,?,?)",
             siret,
             siret[0..8],
             name,
@@ -94,7 +94,7 @@ CSV.foreach(etab_file, headers:true) do |line|
             ville,
             numero_rue,
             [type, rue].join(' ').strip(),
-            etat
+            etat,
             )
 end
 
