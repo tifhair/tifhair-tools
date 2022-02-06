@@ -83,7 +83,7 @@ end
 def gmap_url(nom, addresse)
   n = URI.encode_www_form_component(nom)
   a = URI.encode_www_form_component(addresse)
-  return "https://maps.google.com/?q=#{n} #{a}"
+  return "https://www.google.com/maps/?q=#{n} #{a}"
 end
 
 def make_marker_html(nom, addresse)
