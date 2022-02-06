@@ -47,14 +47,14 @@ $olddb = SQLite3::Database.open(old_db)
 front_url = ""
 while front_url == ""
   begin
-    siret, name, num, voie, ville = $olddb.execute("SELECT siret, name, numero_rue, voie, ville from coiffeurs where blague=1 and ORDER BY RANDOM() LIMIT 1")[0]
+    siret, name, num, voie, ville = $olddb.execute("SELECT siret, name, numero_rue, voie, ville from coiffeurs where blague=1 ORDER BY RANDOM() LIMIT 1")[0]
     exist_f = Dir.glob(File.join($dest_front, siret+"*"))
     if exist_f.size != 0
       puts "Already downloaded #{exist_f[0]}"
       exit
     end
     addresse = [num, voie, ville].join(' ').strip()
-    out_file = "#{siret}_#{name.split(/[' \-_]/).join('_')}.jpg"
+    out_file = File.join($dest_front, "#{siret}_#{name.split(/[' \-_]/).join('_')}.jpg")
     front_url = get_url(mechanize, name, addresse)
   rescue SignalException
     exit
