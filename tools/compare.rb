@@ -6,7 +6,7 @@ require "progressbar"
 STDOUT.sync = true
 
 def usage()
-  puts "run compare.rb coiffeurs_orig.sqlite coiffeurs_update.sqlite"
+  puts "ruby compare.rb coiffeurs_orig.sqlite coiffeurs_update.sqlite"
 end
 
 old_db = ARGV[0]
