@@ -1,4 +1,5 @@
 *.swp
+photos_front
 *.sqlite
 .api_key
 build
