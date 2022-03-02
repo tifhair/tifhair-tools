@@ -31,35 +31,49 @@ $newdb.results_as_hash = true
 
 $select_all = "SELECT siret, siren, name, date, codepostal, ville, numero_rue, voie, lat, lng, global_code, blague, etat FROM Coiffeurs"
 
-stm = $newdb.prepare $select_all + " WHERE seen=0 ORDER BY name"
+begin
+  stm = $newdb.prepare $select_all + " WHERE seen=0 ORDER BY name"
+rescue SQLite3::SQLException
+  $newdb.execute("alter TABLE Coiffeurs ADD COLUMN seen bool")
+  $newdb.execute("UPDATE Coiffeurs set seen=0")
+  retry
+end
 
 $known_lol = $olddb.execute("SELECT name FROM Coiffeurs where blague=1").map {|k| k.values[0]}.uniq.sort
 $known_bad = $olddb.execute("SELECT name FROM Coiffeurs where blague=0").map {|k| k.values[0]}.uniq.sort
 
 
 def is_blague(old, new)
+  old_name = ""
+  new_name = ""
+  if old
+    old_name = old['name']
+  end
+  if new
+    new_name = new['name']
+  end
 
-  if $known_lol.include?(new)
+  if $known_lol.include?(new_name)
     return true
   end
-  if $known_bad.include?(new)
+  if $known_bad.include?(old_name)
     return false
   end
 
   if old == nil
-      puts "Nouveau nom #{new}"
+      puts "Nouveau nom #{new_name} (#{new['ville']}/#{new['codepostal']})"
       puts "Est-ce que c'est drole ? [y/N]"
   else
-      puts "Name change from #{old} to #{new}"
+      puts "Name change from '#{old_name}' to '#{new_name}' (#{new['ville']}/#{new['codepostal']})"
       puts "Est-ce que c'est drole maintenant? [y/N]"
   end
   res = $stdin.gets().strip
 
   if res=~/^n?$/i
-    $known_bad << new
+    $known_bad << new_name
     return false
   end
-  $known_lol << new
+  $known_lol << new_name
   return true
 end
 
@@ -122,7 +136,7 @@ def handle_diff(old,new)
       raise Exception.new("siret: #{siret} unhandled case for #{c}: #{v} ")
 
     when "name"
-      res = is_blague(old[c], new[c])
+      res = is_blague(old, new)
       if res 
         $olddb.execute("UPDATE coiffeurs SET blague=1 WHERE siret=?", siret)
       else
@@ -136,7 +150,7 @@ def handle_diff(old,new)
         break
       else
         puts "Etablissement connu, mais maintenant actif: #{siret}" 
-        res = is_blague(nil, new['name'])
+        res = is_blague(nil, new)
         if res 
           $olddb.execute("UPDATE coiffeurs SET blague=1 WHERE siret=?", siret)
         else
@@ -146,43 +160,19 @@ def handle_diff(old,new)
         $olddb.execute("UPDATE coiffeurs SET etat=? WHERE siret=?", new['etat'], siret)
       end
     when "ville"
-      puts "Accepter Nouveau 'ville'? [Y/n]"
-      res = $stdin.gets().strip() 
-      if res == ""
-          $olddb.execute("UPDATE coiffeurs SET voie=? WHERE siret=?", new['ville'], siret)
-          old['ville'] = new['ville']
-      else
-        raise Exception.new("I don't know what to do :(")
-      end
+      $olddb.execute("UPDATE coiffeurs SET voie=? WHERE siret=?", new['ville'], siret)
+      old['ville'] = new['ville']
     when "date"
       $olddb.execute("UPDATE coiffeurs SET date=? WHERE siret=?", new['date'], siret)
     when "voie"
-      puts "Accepter Nouveau 'voie'? [Y/n]"
-      res = $stdin.gets().strip() 
-      if res == ""
-          $olddb.execute("UPDATE coiffeurs SET voie=? WHERE siret=?", new['voie'], siret)
-          old['voie'] = new['voie']
-      else
-        raise Exception.new("I don't know what to do :(")
-      end
+      $olddb.execute("UPDATE coiffeurs SET voie=? WHERE siret=?", new['voie'], siret)
+      old['voie'] = new['voie']
     when "numero_rue"
-      puts "Accepter Nouveau 'numero_rue'? [Y/n]"
-      res = $stdin.gets().strip() 
-      if res == ""
-          $olddb.execute("UPDATE coiffeurs SET numero_rue=? WHERE siret=?", new['numero_rue'], siret)
-          old['numero_rue'] = new['numero_rue']
-      else
-        raise Exception.new("I don't know what to do :(")
-      end
+      $olddb.execute("UPDATE coiffeurs SET numero_rue=? WHERE siret=?", new['numero_rue'], siret)
+      old['numero_rue'] = new['numero_rue']
     when "codepostal"
-      puts "Accepter Nouveau 'codepostal'? [Y/n]"
-      res = $stdin.gets().strip() 
-      if res == ""
-          $olddb.execute("UPDATE coiffeurs SET codepostal=? WHERE siret=?", new['codepostal'], siret)
-          old['codepostal'] = new['codepostal']
-      else
-        raise Exception.new("I don't know what to do :(")
-      end
+        $olddb.execute("UPDATE coiffeurs SET codepostal=? WHERE siret=?", new['codepostal'], siret)
+        old['codepostal'] = new['codepostal']
     else
       raise Exception.new("Change for #{c}: #{old[c]} != #{new[c]}")
     end
@@ -191,7 +181,7 @@ end
 
 def add_row(db, row)
   if row['etat'] == 'A'
-    res = is_blague(nil, row['name'])
+    res = is_blague(nil, row)
     blague = res ? 1 : 0
   end
   db.execute("INSERT INTO coiffeurs (siret, siren, name, date, codepostal, ville, numero_rue, voie, lat, lng, global_code,  blague, etat ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -222,7 +212,7 @@ stm.execute.each do |row|
   elsif old_rows.size ==  1
     handle_diff(old_rows[0], row)
   elsif old_rows.size == 0
-      add_row($olddb, row)
+    add_row($olddb, row)
   end
   $newdb.execute("UPDATE coiffeurs set seen=1 WHERE siret=?", row['siret'])
   done+=1
