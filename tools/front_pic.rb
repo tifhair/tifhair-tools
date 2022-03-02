@@ -14,6 +14,11 @@ if not old_db or not File.exist?(old_db)
   exit
 end
 
+req = nil
+if ARGV.size > 1
+  req = ARGV[1]
+end
+
 FileUtils.mkdir_p($dest_front)
 
 mechanize = Mechanize.new
@@ -34,7 +39,6 @@ def get_url(m, nom, addresse)
   c = b.select{|x| x=~/streetviewpixels/}
   e = c.map{|x| x.scan(/streetviewpixels-pa.googleapis.com[^"]+/)[0]}
   #e = d.select{|x| x=~/tactile/}
-  pp e
   f = "https://" + e[0][0..-2]
   g= f.gsub("\\\\", "\\").gsub(/\\[uU]\{?([0-9A-F]{4})\}?/i) { $1.hex.chr(Encoding::UTF_8) }
   front_url = g.gsub("&thumbfov=100", "").gsub(/&h=\d+/, "&h=768").gsub(/&w=\d+/, "&w=1024")
@@ -47,7 +51,15 @@ $olddb = SQLite3::Database.open(old_db)
 front_url = ""
 while front_url == ""
   begin
-    siret, name, num, voie, ville = $olddb.execute("SELECT siret, name, numero_rue, voie, ville from coiffeurs where blague=1 ORDER BY RANDOM() LIMIT 1")[0]
+    if req
+      siret, name, num, voie, ville = $olddb.execute("SELECT siret, name, numero_rue, voie, ville from coiffeurs where blague=1 AND name LIKE ? ORDER BY RANDOM() LIMIT 1", '%'+req+'%')[0]
+    if not siret
+      puts "Can't find anything for #{req}"
+      exit
+    end
+    else
+      siret, name, num, voie, ville = $olddb.execute("SELECT siret, name, numero_rue, voie, ville from coiffeurs where blague=1 ORDER BY RANDOM() LIMIT 1")[0]
+    end
     exist_f = Dir.glob(File.join($dest_front, siret+"*"))
     if exist_f.size != 0
       puts "Already downloaded #{exist_f[0]}"
