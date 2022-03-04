@@ -31,14 +31,6 @@ $newdb.results_as_hash = true
 
 $select_all = "SELECT siret, siren, name, date, codepostal, ville, numero_rue, voie, lat, lng, global_code, blague, etat FROM Coiffeurs"
 
-begin
-  stm = $newdb.prepare $select_all + " WHERE seen=0 ORDER BY name"
-rescue SQLite3::SQLException
-  $newdb.execute("alter TABLE Coiffeurs ADD COLUMN seen bool")
-  $newdb.execute("UPDATE Coiffeurs set seen=0")
-  retry
-end
-
 $known_lol = $olddb.execute("SELECT name FROM Coiffeurs where blague=1").map {|k| k.values[0]}.uniq.sort
 $known_bad = $olddb.execute("SELECT name FROM Coiffeurs where blague=0").map {|k| k.values[0]}.uniq.sort
 
@@ -77,14 +69,14 @@ def is_blague(old, new)
   return true
 end
 
-def handle_diff(old,new)
+def handle_diff(old,new, auto)
   diff = {}
   ["name", "date", "codepostal", "ville", "numero_rue", "voie", "etat", "lat", "lng", "global_code", "blague"].each do |c|
     if old[c] != new[c]
       diff[c] = "'#{old[c]}' != '#{new[c]}'"
     end
   end
-  return if diff.empty?
+  return true if diff.empty?
 
   siret = old['siret']
 
@@ -136,6 +128,10 @@ def handle_diff(old,new)
       raise Exception.new("siret: #{siret} unhandled case for #{c}: #{v} ")
 
     when "name"
+      if auto
+        # We are in auto mode, skip for now
+        return false
+      end
       res = is_blague(old, new)
       if res 
         $olddb.execute("UPDATE coiffeurs SET blague=1 WHERE siret=?", siret)
@@ -149,6 +145,10 @@ def handle_diff(old,new)
         $olddb.execute("UPDATE coiffeurs SET etat=? WHERE siret=?", new['etat'], siret)
         break
       else
+        if auto
+          # We are in auto mode, skip for now
+          return false
+        end
         puts "Etablissement connu, mais maintenant actif: #{siret}" 
         res = is_blague(nil, new)
         if res 
@@ -177,10 +177,15 @@ def handle_diff(old,new)
       raise Exception.new("Change for #{c}: #{old[c]} != #{new[c]}")
     end
   end
+  return true
 end
 
-def add_row(db, row)
+def add_row(db, row, auto)
+  blague = nil
   if row['etat'] == 'A'
+    if auto
+      return false
+    end
     res = is_blague(nil, row)
     blague = res ? 1 : 0
   end
@@ -199,21 +204,49 @@ def add_row(db, row)
             blague,
             row['etat']
             )
+  return true
 end
+
 
 to_do = $newdb.execute("select count(*) from coiffeurs where seen=0")[0]["count(*)"]
 done = 0
 
-stm.execute.each do |row|
-  puts "Progress: #{done}/#{to_do} #{100*done/to_do}%"
-  old_rows = $olddb.execute($select_all+" WHERE siret = ?", row['siret'])
-  if old_rows.size > 1
-    raise Exception("Shouldn't have more than 1 row for siret #{row['siret']}")
-  elsif old_rows.size ==  1
-    handle_diff(old_rows[0], row)
-  elsif old_rows.size == 0
-    add_row($olddb, row)
+[true, false].each do |auto|
+  if auto
+    puts "First pass, manual review"
+  else
+    puts "Second pass, manual review"
   end
-  $newdb.execute("UPDATE coiffeurs set seen=1 WHERE siret=?", row['siret'])
-  done+=1
+
+  begin
+    stm = $newdb.prepare $select_all + " WHERE seen=0 ORDER BY name"
+  rescue SQLite3::SQLException
+    $newdb.execute("alter TABLE Coiffeurs ADD COLUMN seen bool")
+    $newdb.execute("UPDATE Coiffeurs set seen=0")
+    retry
+  end
+
+  stm.execute.each do |row|
+    puts "Progress: #{done}/#{to_do} #{100*done/to_do}%" if done%50==0
+    old_rows = $olddb.execute($select_all+" WHERE siret = ?", row['siret'])
+    if old_rows.size > 1
+      raise Exception("Shouldn't have more than 1 row for siret #{row['siret']}")
+    elsif old_rows.size ==  1
+      res = handle_diff(old_rows[0], row, auto)
+      if res
+        $newdb.execute("UPDATE coiffeurs set seen=1 WHERE siret=?", row['siret'])
+        done += 1
+      else
+        puts "First pass: skipping #{row} "
+      end
+    elsif old_rows.size == 0
+      res = add_row($olddb, row, auto)
+      if res
+        $newdb.execute("UPDATE coiffeurs set seen=1 WHERE siret=?", row['siret'])
+        done += 1
+      else
+        puts "First Pass: skipping #{row}"
+      end
+    end
+  end
 end
