@@ -1,4 +1,5 @@
 require "date"
+require "set"
 require "fileutils"
 require "sqlite3"
 require "progressbar"
@@ -21,18 +22,28 @@ if not new_db or not File.exist?(new_db)
   exit
 end
 
+
 # Backup orig db
 FileUtils.cp(old_db, old_db.gsub(/.sqlite$/, "")+"_"+DateTime.now.strftime("%Y%m%d-%H%M%S")+".sqlite")
 
 $olddb = SQLite3::Database.open(old_db)
 $newdb = SQLite3::Database.open(new_db)
+
+has_seen = $newdb.execute("SELECT COUNT(*) FROM pragma_table_info('Names') WHERE name='seen'")
+if has_seen == [[0]]
+  $newdb.execute("ALTER TABLE Names ADD COLUMN seen bool")
+  $newdb.execute("UPDATE Names SET seen=0")
+end
+
 $olddb.results_as_hash = true
 $newdb.results_as_hash = true
 
-$select_all = "SELECT siret, siren, name, date, codepostal, ville, numero_rue, voie, lat, lng, global_code, blague, etat FROM Coiffeurs"
 
-$known_lol = $olddb.execute("SELECT name FROM Coiffeurs where blague=1").map {|k| k.values[0]}.uniq.sort
-$known_bad = $olddb.execute("SELECT name FROM Coiffeurs where blague=0").map {|k| k.values[0]}.uniq.sort
+$select_all_new = "SELECT c.siret as siret, c.siren as siren, c.date as date, c.codepostal as codepostal, c.ville as ville, c.numero_rue as numero_rue, c.voie as voie, c.lat as lat, c.lng as lng, c.global_code as global_code, c.etat as etat, n.name as name, n.blague as blague, n.seen as seen FROM Coiffeurs as c, Names as n WHERE c.siret = n.siret"
+$select_all_old = "SELECT c.siret as siret, c.siren as siren, c.date as date, c.codepostal as codepostal, c.ville as ville, c.numero_rue as numero_rue, c.voie as voie, c.lat as lat, c.lng as lng, c.global_code as global_code, c.etat as etat, n.name as name, n.blague as blague FROM Coiffeurs as c, Names as n WHERE c.siret = n.siret"
+
+$known_lol = Set.new($olddb.execute("SELECT name FROM Names where blague=1").map {|k| k.values[0]}.uniq.sort)
+$known_bad = Set.new($olddb.execute("SELECT name FROM Names where blague=0").map {|k| k.values[0]}.uniq.sort)
 
 
 def is_blague(old, new)
@@ -134,7 +145,7 @@ def handle_diff(old,new, auto)
       end
       res = is_blague(old, new)
       if res 
-        $olddb.execute("UPDATE coiffeurs SET blague=1 WHERE siret=?", siret)
+        $olddb.execute("UPDATE Names SET blague=1 WHERE siret=? AND name=?", siret, old)
       else
         $olddb.execute("UPDATE coiffeurs SET blague=0 WHERE siret=?", siret)
       end
@@ -208,27 +219,28 @@ def add_row(db, row, auto)
 end
 
 
-to_do = $newdb.execute("select count(*) from coiffeurs where seen=0")[0]["count(*)"]
+to_do = $newdb.execute("select count(*) from Names where seen=0")[0]["count(*)"]
 done = 0
 
 [true, false].each do |auto|
   if auto
-    puts "First pass, manual review"
+    puts "First pass, automatic review"
   else
     puts "Second pass, manual review"
   end
 
   begin
-    stm = $newdb.prepare $select_all + " WHERE seen=0 ORDER BY name"
+    stm = $newdb.prepare $select_all_new + " AND n.seen=0 ORDER BY n.name"
   rescue SQLite3::SQLException
-    $newdb.execute("alter TABLE Coiffeurs ADD COLUMN seen bool")
-    $newdb.execute("UPDATE Coiffeurs set seen=0")
+    $newdb.execute("alter TABLE Names ADD COLUMN seen bool")
+    $newdb.execute("UPDATE Names set seen=0")
     retry
   end
 
   stm.execute.each do |row|
     puts "Progress: #{done}/#{to_do} #{100*done/to_do}%" if done%50==0
-    old_rows = $olddb.execute($select_all+" WHERE siret = ?", row['siret'])
+    pp $select_all_old+" AND c.siret = "+ row['siret']
+    old_rows = $olddb.execute($select_all_old+" AND c.siret = ?", row['siret'])
     if old_rows.size > 1
       raise Exception("Shouldn't have more than 1 row for siret #{row['siret']}")
     elsif old_rows.size ==  1
@@ -240,6 +252,7 @@ done = 0
         puts "First pass: skipping #{row} "
       end
     elsif old_rows.size == 0
+      pp row
       res = add_row($olddb, row, auto)
       if res
         $newdb.execute("UPDATE coiffeurs set seen=1 WHERE siret=?", row['siret'])

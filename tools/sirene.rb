@@ -1,8 +1,10 @@
 require "csv"
 require "sqlite3"
 require "progressbar"
+require "set"
 
 STDOUT.sync = true
+$debug=false
 
 dbfile = "coiffeurs.sqlite"
 
@@ -29,13 +31,15 @@ end
 if not File.exist?(dbfile)
   db = SQLite3::Database.open(dbfile)
   db.transaction
-  db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, blague BOOL, etat TEXT);"
+  db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT);"
+  db.execute "CREATE TABLE Names(id INTEGER PRIMARY KEY, siret TEXT, name TEXT, blague BOOL);"
   db.commit
   db.close()
 end
 
 db = SQLite3::Database.open(dbfile)
-
+db.synchronous = 0
+db.journal_mode = 'memory'
 
 $stderr.puts "Loading extra possible names from #{unite_file} 1/2"
 $stderr.puts "calculating number of lines to parse"
@@ -50,10 +54,9 @@ CSV.foreach(unite_file, headers:true) do |l|
   rescue
   end
   next if l['activitePrincipaleUniteLegale'] != "96.02A"
-  nom = l['denominationUsuelle1UniteLegale'] || l['denominationUsuelle2UniteLegale'] || l['denominationUsuelle3UniteLegale']
-  next unless nom
+  noms = [l['denominationUniteLegale'],  l['denominationUsuelle1UniteLegale'], l['denominationUsuelle2UniteLegale'], l['denominationUsuelle3UniteLegale']]
   siren = l['siren']
-  extra_names[siren] = nom
+  extra_names[siren] = noms
 end
 progressbar.finish
 
@@ -62,22 +65,21 @@ $stderr.puts "calculating number of lines to parse"
 total = `wc -l "#{etab_file}"  | cut -d " " -f 1`.strip().to_i()
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 
-i=0
 CSV.foreach(etab_file, headers:true) do |line|
   i+=1
   begin
-    progressbar.progress += 10000 if i%10000 ==0
+    progressbar.progress += 100 if i%100 ==0
   rescue
   end
   activite = line["activitePrincipaleEtablissement"]
   next unless activite
   next unless activite.start_with?("96.02A")
-  name = (line["enseigne1Etablissement"] || line["enseigne2Etablissement"] || line["enseigne3Etablissement"] || line["denominationUsuelleEtablissement"] || "").strip
+  names = [line["enseigne1Etablissement"], line["enseigne2Etablissement"], line["enseigne3Etablissement"], line["denominationUsuelleEtablissement"]].compact
   siret = line["siret"]
-  if name == ""
-    name = extra_names[siret[0..8]]
-  end
-  next unless name
+  extras = extra_names[siret[0..8]]
+  names = names.concat(extras).compact if extras
+  names = Set.new(names).to_a
+  next if names.size == 0
   codepostal = line["codePostalEtablissement"]
   date_creation = line["dateCreationEtablissement"]
   ville = line['libelleCommuneEtablissement']
@@ -85,17 +87,21 @@ CSV.foreach(etab_file, headers:true) do |line|
   type = line['typeVoieEtablissement']
   rue = line['libelleVoieEtablissement']
   etat = line['etatAdministratifEtablissement']
-  db.execute("INSERT INTO Coiffeurs (siret, siren, name, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?,?)",
-            siret,
-            siret[0..8],
-            name,
-            date_creation,
-            codepostal,
-            ville,
-            numero_rue,
-            [type, rue].join(' ').strip(),
-            etat,
-            )
+  db.transaction do |trans|
+    trans.execute("INSERT INTO Coiffeurs (siret, siren, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?)",
+              siret,
+              siret[0..8],
+              date_creation,
+              codepostal,
+              ville,
+              numero_rue,
+              [type, rue].join(' ').strip(),
+              etat,
+              )
+    names.each do |nom|
+      trans.execute("INSERT INTO names (id, siret, name, blague) VALUES (NULL, ?, ?, NULL)", siret, nom)
+    end
+  end
 end
 
 progressbar.finish
