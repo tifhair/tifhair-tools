@@ -1,6 +1,8 @@
+require "csv"
 require "geocoder"
 require "progressbar"
 require "sqlite3"
+require "tempfile"
 
 $google=false
 
@@ -20,14 +22,10 @@ if ARGV.size==2
     lookup: :google,
     api_key: File.read(ARGV[1]).strip()
   )
-else
-  Geocoder.configure(
-    lookup: :ban_data_gouv_fr
-  )
 end
 
-
 db = SQLite3::Database.open(db_file)
+
 def update_with_google(db, row)
   siret,  a, b, c, d = row
   address = [a,b,c,d].join(' ').strip
@@ -43,27 +41,48 @@ def update_with_google(db, row)
   end
 end
 
-def update_with_gouvfr(db, row)
-  siret, a, b, c, d = row
-  address = [a,b,c,d].join(' ').strip
-  res = Geocoder.search(address)[0]
-  if res
-    lng, lat =  res.data['features'][0]['geometry']['coordinates']
-    db.execute('UPDATE Coiffeurs SET lat=?, lng=? WHERE siret = ?', lat, lng, siret)
+def post(url, file)
+  uri = URI.parse(url)
+  req= Net::HTTP::Post.new(uri)
+
+  form_data = [
+    ['result_columns', 'latitude'],
+    ['result_columns', 'longitude'],
+      ['data', File.open(file, 'r')]
+    ]
+  req.set_form form_data, 'multipart/form-data'
+
+  Net::HTTP.start(uri.hostname, uri.port, :use_ssl => url.start_with?('https://')) do |http|
+    res = http.request(req)
+    return res.body
   end
 end
 
-coiffeurs = db.execute("SELECT siret, numero_rue, voie, codepostal, ville FROM Coiffeurs WHERE etat='A' AND lat IS NULL")
-total = coiffeurs.size()
+def update_with_gouvfr(db, rows)
+  file = Tempfile.new('geo')
+  csv_string = CSV.generate(headers: "siret,housenumber,street,postcode,city", write_headers: true) do |csv|
+    rows.each do |row|
+      siret, numero, voie, cp ,ville = row
+      csv << [siret, numero, voie, cp, ville]
+    end
+  end
+  file.write(csv_string)
+  file.sync()
+  file.close()
+  csv = CSV.parse(post("https://api-adresse.data.gouv.fr/search/csv/", file), headers: true)
+  csv.each do |row|
+    # Some weird string conversion is required for siret, I assume otherwise it's turned into an INTEGER
+    db.execute('UPDATE Coiffeurs SET lat=?, lng=? WHERE siret = ?', row['latitude'], row['longitude'], "#{row['siret']}")
+  end
+end
+
+$blague_only = ""
+$blague_only = " AND n.blague=1 "
+total = db.execute("SELECT count(*) from Coiffeurs as c, Names as n WHERE c.etat='A' AND c.lat IS NULL #{$blague_only}")[0][0]
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 
-coiffeurs.each do |row|
-  progressbar.increment
-
-  if $google
-    update_with_google(db, row)
-  else
-    update_with_gouvfr(db, row)
-  end
+db.execute("SELECT DISTINCT(c.siret), c.numero_rue, c.voie, c.codepostal, c.ville, n.name FROM Coiffeurs as c, Names as n WHERE etat='A' AND lat IS NULL AND c.siret=n.siret #{$blague_only} GROUP BY c.siret").each_slice(10) do |rows|
+    update_with_gouvfr(db, rows)
+    progressbar.progress += rows.length
 end
 progressbar.finish
