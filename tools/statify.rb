@@ -7,8 +7,6 @@ require "sqlite3"
 
 Slim::Engine.set_options pretty: true, sort_attrs: false
 
-$blague = 'etat = "A" AND blague=1 ORDER BY RANDOM()'
-#$blague = 'etat = "A" AND (name LIKE "%tif%" OR name LIKE "%hair%" OR name LIKE "%epi%" OR name LIKE "%mech%") ORDER BY RANDOM()'
 
 def usage
   puts "run statify.rb <source_dir> <dest_dir>"
@@ -33,7 +31,7 @@ if not File.directory?(dest_dir)
 end
 
 def db_get_addresse_by_name(db, name)
-  rows = db.execute("SELECT name, numero_rue, voie, ville  FROM Coiffeurs WHERE name = ? AND etat='A' ORDER BY RANDOM() LIMIT 1", name)
+  rows = db.execute("SELECT n.name, c.numero_rue, c.voie, c.ville  FROM Coiffeurs as c, Names as n WHERE n.name = ? AND etat='A' AND n.siret=c.siret ORDER BY RANDOM() LIMIT 1", name)
   if rows.size==1
     _, num, voie, ville = rows[0]
     addresse = [num, voie, ville].join(' ').strip()
@@ -49,7 +47,7 @@ def make_json(db_file, dest_dir, filter)
     "type"=>"FeatureCollection",
     "name" => "Coiffeurs Blagueurs",
     "features" => []}}
-  db.execute("SELECT name, lat, lng, numero_rue, voie, ville, codepostal  FROM Coiffeurs WHERE #{filter}").each do |row|
+  db.execute("SELECT n.name, c.lat, c.lng, c.numero_rue, c.voie, c.ville, c.codepostal  FROM Coiffeurs as c, Names as n WHERE etat = 'A' AND blague=1 AND n.siret=c.siret ORDER BY RANDOM()").each do |row|
     nom,lat,lng,num, voie,ville, codepostal = row
     nom = nom.downcase().split.map(&:capitalize).join(' ')
     addresse = [num, voie, ville].join(' ').strip()
@@ -103,6 +101,7 @@ def copy_dir(source, dest)
 end
 
 def get_coiffeurs_by_dept(db_file, dept)
+  puts dept
   d = dept
   if d == "2A"
     d = "20"
@@ -112,9 +111,9 @@ def get_coiffeurs_by_dept(db_file, dept)
   end
   db = SQLite3::Database.open(db_file)
 
-  res = db.execute("SELECT count(*) FROM Coiffeurs WHERE codepostal LIKE ? AND #{$blague}", d+"%")
+  res = db.execute("SELECT count(*) FROM Coiffeurs as c, Names as n WHERE codepostal LIKE ? AND n.blague=1 AND c.siret = n.siret", d+"%")
   blagueurs =  res[0][0]
-  res = db.execute("SELECT count(*) FROM Coiffeurs WHERE codepostal LIKE ?", d+"%")
+  res = db.execute("SELECT count(*) FROM Coiffeurs as c, Names as n WHERE codepostal LIKE ? AND c.siret = n.siret", d+"%")
   tous  =  res[0][0]
   percent = 100.0 * blagueurs / tous 
   return percent
@@ -135,7 +134,7 @@ def make_dept_geojson(db_file, source, dest)
 end
 
 def db_get_count_pattern(db, pattern)
-  return db.execute("SELECT count(*) from Coiffeurs WHERE #{pattern} LIMIT 1")[0][0]
+  return db.execute("SELECT count(*) from Coiffeurs as c, Names as n WHERE c.etat = 'A' AND n.name LIKE ? AND n.siret=c.siret LIMIT 1", pattern)[0][0]
 end
 
 def build_stats(db_file, slim_file)
@@ -162,7 +161,7 @@ SLIM1
       | Il y a 
       strong
 """
-    content << "        | #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")}\n"
+    content << "        | #{db_get_count_pattern(db, r)}\n"
     content << "      |  salons actifs avec un nom dérivé de \n"
     content << "      strong\n"
     content << "        | #{n}\n"
@@ -180,7 +179,7 @@ SLIM1
       | On trouve 
       strong
 """
-    content << "        | #{db_get_count_pattern(db, "etat='A' AND name LIKE '#{r}'")}\n"
+    content << "        | #{db_get_count_pattern(db, r)}\n"
     content << "      |  salons actifs avec un nom similaire à \n"
     content << "      strong\n"
     content << "        | #{n}\n"
@@ -445,11 +444,15 @@ SLIM1
 end
 
 db_file = File.join(source_dir, "coiffeurs.sqlite")
+puts "making dept geojson"
 make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
+puts "making geojson"
 make_json(db_file, dest_dir, $blague)
 
+puts "making stats"
 build_stats(db_file, File.join(source_dir, "stats.slim"))
 
+puts "making main.slim"
 slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
 copy_dir(File.join(source_dir, 'js'), dest_dir)
