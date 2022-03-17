@@ -5,6 +5,23 @@ map.setView([48.50, 2.29], 4);
 map.attributionControl.setPosition('topright');
 var legend = L.control({position: 'bottomleft'});
 
+var gradients = [
+    "#fac569",
+    "#f8ba61",
+    "#f5ae5a",
+    "#f2a353",
+    "#ef974b",
+    "#eb8c44",
+    "#e8803d",
+    "#e47436",
+    "#e0672f",
+    "#dc5a28",
+    "#d74c21",
+    "#d33d1a",
+    "#ce2b14",
+    "#c90d0d",
+];
+
 
 legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
@@ -30,21 +47,33 @@ var getJSON = function(url, callback) {
 };
 
 function getDeptColor(blag) {
-    if (blag < 2)
-        return "#fff7ec";
-    if (blag < 3)
-        return "#fee8c8";
-    if (blag < 4)
-        return "#fdd49e";
-    if (blag < 5)
-        return "#fdbb84";
-    if (blag < 6)
-        return "#fc8d59";
-    if (blag < 7)
-        return "#ef6548";
-    if (blag < 8)
-        return "#d7301f";
-    return "#990000";
+   if (blag < 3)
+       return gradients[0];
+   if (blag < 4)
+       return gradients[1];
+   if (blag < 5)
+       return gradients[2];
+   if (blag < 6)
+       return gradients[3];
+   if (blag < 7)
+       return gradients[4];
+   if (blag < 8)
+       return gradients[5];
+   if (blag < 9)
+       return gradients[6];
+   if (blag < 10)
+       return gradients[7];
+   if (blag < 11)
+       return gradients[8];
+   if (blag < 12)
+       return gradients[9];
+   if (blag < 13)
+       return gradients[10];
+  if (blag < 14)
+       return gradients[11];
+   if (blag < 15)
+       return gradients[12];
+   return gradients[-1];
 }
 
 function showDeptGeoJSON(data) {
@@ -69,14 +98,14 @@ function showDeptGeoJSON(data) {
 
 	legend.onAdd = function (map) {
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [2, 3, 4, 5, 6, 7, 8, 9];
+			grades = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 			labels = [];
 
 		div.innerHTML+="<p>Pourcentage de blagueurs</p>"
 		// loop through our density intervals and generate a label with a colored square for each interval
 		for (var i = 0; i < grades.length; i++) {
 			div.innerHTML +=
-				'<i style="background:' + getDeptColor(grades[i] + 1) + '"></i> ' +
+				'<i style="background:' + gradients[i] + '"></i> ' +
 				grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
 		}
 		return div;
