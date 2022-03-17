@@ -20,7 +20,7 @@ if not source_dir or not File.exist?(source_dir)
   exit
 end
 
-if not dest_dir 
+if not dest_dir
   usage
   exit
 end
@@ -41,7 +41,7 @@ def db_get_addresse_by_name(db, name)
 end
 
 
-def make_json(db_file, dest_dir, filter)
+def make_json(db_file, dest_dir)
   db = SQLite3::Database.open(db_file)
   res = {'data' => {
     "type"=>"FeatureCollection",
@@ -100,8 +100,33 @@ def copy_dir(source, dest)
   FileUtils.cp_r(source, dest, verbose:true)
 end
 
+$cached_dept = nil
+
+def load_dept(db)
+  depts = %w{971 972 973 976 01 02 03 04 05 06 2A 2B 07 08 09 10 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 974}
+  res = db.execute("SELECT c.codepostal, n.blague FROM Coiffeurs as c, Names as n WHERE etat='A' AND c.siret = n.siret")
+  $cached_dept = {}
+  res.each do |row|
+    next unless row[0]
+    cp = row[0]
+    dept = cp[0..1]
+    if cp.start_with?("97")
+      dept = cp[0..2]
+    end
+    if $cached_dept[dept]
+      if row[1] == 1
+        $cached_dept[dept][:blague]+=1
+      end
+      $cached_dept[dept][:total]+=1
+    else
+      $cached_dept[dept] = {blague: 0,total:1}
+      $cached_dept[dept][:blague]+=1 if row[1] == 1
+    end
+  end
+end
+
 def get_coiffeurs_by_dept(db_file, dept)
-  puts dept
+
   d = dept
   if d == "2A"
     d = "20"
@@ -109,13 +134,13 @@ def get_coiffeurs_by_dept(db_file, dept)
   if d== "2B"
     d = "20"
   end
-  db = SQLite3::Database.open(db_file)
 
-  res = db.execute("SELECT count(*) FROM Coiffeurs as c, Names as n WHERE codepostal LIKE ? AND n.blague=1 AND c.siret = n.siret", d+"%")
-  blagueurs =  res[0][0]
-  res = db.execute("SELECT count(*) FROM Coiffeurs as c, Names as n WHERE codepostal LIKE ? AND c.siret = n.siret", d+"%")
-  tous  =  res[0][0]
-  percent = 100.0 * blagueurs / tous 
+  db = SQLite3::Database.open(db_file)
+  if not $cached_dept
+    load_dept(db)
+  end
+
+  percent = 100.0 * $cached_dept[d][:blague] / $cached_dept[d][:total]
   return percent
 end
 
@@ -155,7 +180,7 @@ SLIM1
     ["Caract'hair",   "%ara%t%hair%"],
     ["Planet'hair",   "%planet%hair%"],
   ].each do |n,r|
-    content << 
+    content <<
 """
     li
       | Il y a 
@@ -173,7 +198,7 @@ SLIM1
     ["Imagina'tif",  "%imagi%na%tif%"],
     ["Instinc'tif",  "%instin%tif%"],
   ].each do |n,r|
-    content << 
+    content <<
 """
     li
       | On trouve 
@@ -447,7 +472,7 @@ db_file = File.join(source_dir, "coiffeurs.sqlite")
 puts "making dept geojson"
 make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
 puts "making geojson"
-make_json(db_file, dest_dir, $blague)
+make_json(db_file, dest_dir)
 
 puts "making stats"
 build_stats(db_file, File.join(source_dir, "stats.slim"))

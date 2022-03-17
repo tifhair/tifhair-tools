@@ -4,3 +4,4 @@ photos_front
 .api_key
 build
 src/stats.slim
+backups
