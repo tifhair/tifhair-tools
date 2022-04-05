@@ -73,6 +73,8 @@ function getDeptColor(blag) {
        return gradients[11];
    if (blag < 15)
        return gradients[12];
+   if (blag < 16)
+       return gradients[13];
    return gradients[-1];
 }
 
