@@ -47,7 +47,7 @@ def make_json(db_file, dest_dir)
     "type"=>"FeatureCollection",
     "name" => "Coiffeurs Blagueurs",
     "features" => []}}
-  db.execute("SELECT n.name, c.lat, c.lng, c.numero_rue, c.voie, c.ville, c.codepostal  FROM Coiffeurs as c, Names as n WHERE etat = 'A' AND blague=1 AND n.siret=c.siret ORDER BY RANDOM()").each do |row|
+  db.execute("SELECT n.name, c.lat, c.lng, c.numero_rue, c.voie, c.ville, c.codepostal  FROM Coiffeurs as c, Names as n WHERE etat = 'A' AND blague=1 AND n.siret=c.siret AND n.main=1 ORDER BY RANDOM()").each do |row|
     nom,lat,lng,num, voie,ville, codepostal = row
     nom = nom.downcase().split.map(&:capitalize).join(' ')
     addresse = [num, voie, ville].join(' ').strip()
