@@ -32,7 +32,7 @@ if not File.exist?(dbfile)
   db = SQLite3::Database.open(dbfile)
   db.transaction
   db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT);"
-  db.execute "CREATE TABLE Names(id INTEGER PRIMARY KEY, siret TEXT, name TEXT, blague BOOL);"
+  db.execute "CREATE TABLE Names(id INTEGER PRIMARY KEY, siret TEXT, name TEXT, blague BOOL, seen BOOL, main BOOL, UNIQUE(siret, name));"
   db.commit
   db.close()
 end
