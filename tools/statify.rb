@@ -40,6 +40,13 @@ def db_get_addresse_by_name(db, name)
   return ""
 end
 
+def percent_pays(db_file)
+  db = SQLite3::Database.open(db_file)
+  nb_blagues = db.execute("select count(DISTINCT(c.siret)) from coiffeurs as c, names as n where c.siret = n.siret  and n.blague=1 and c.etat='A'")[0][0].to_i
+  nb_coiffeurs = db.execute("select count(DISTINCT(c.siret)) from coiffeurs as c where c.etat='A'")[0][0].to_i
+  return 100.0*nb_blagues/nb_coiffeurs
+end
+
 
 def make_json(db_file, dest_dir)
   db = SQLite3::Database.open(db_file)
@@ -468,6 +475,7 @@ SLIM1
   puts "written #{slim_file}"
 end
 
+
 db_file = File.join(source_dir, "coiffeurs.sqlite")
 puts "making dept geojson"
 make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
@@ -478,7 +486,7 @@ puts "making stats"
 build_stats(db_file, File.join(source_dir, "stats.slim"))
 
 puts "making main.slim"
-slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"))
+slimify(File.join(source_dir, "main.slim"), File.join(dest_dir, "index.html"), {percent_pays: percent_pays(db_file)})
 copy_dir(File.join(source_dir, 'css' ), dest_dir)
 copy_dir(File.join(source_dir, 'js'), dest_dir)
 copy_dir(File.join(source_dir, 'pics'), dest_dir)
