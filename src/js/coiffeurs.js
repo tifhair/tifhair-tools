@@ -168,6 +168,10 @@ function showCoiffeursGeoJSON(data) {
                         return true
                     }
                 }
+                if (codepostal == null) {
+                    // fucking Aniere
+                    return true
+                }
                 if (codepostal.startsWith(dept)) {
                     if (filter_ville == "") {
                         liste.appendChild(li);
