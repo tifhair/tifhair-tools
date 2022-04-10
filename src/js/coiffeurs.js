@@ -150,6 +150,10 @@ function showCoiffeursGeoJSON(data) {
             var lng = feature.properties.lng;
             var html = feature.properties.liinnerhtml;
             var li = document.createElement("li");
+            if (codepostal == null) {
+                // fucking Aniere
+                return false
+            }
 
             if (lat && lng) {
                 li.onclick = function() {
@@ -167,10 +171,6 @@ function showCoiffeursGeoJSON(data) {
                         liste.appendChild(li);
                         return true
                     }
-                }
-                if (codepostal == null) {
-                    // fucking Aniere
-                    return true
                 }
                 if (codepostal.startsWith(dept)) {
                     if (filter_ville == "") {
