@@ -221,10 +221,7 @@ SLIM1
   h3
     | Palmarès d'excellents calembours
   p
-    | Bien qu'il ne soit plus en activité, le salon 
-    a target='_blank' href='#{gmap_url('A Thaon Tifs', db_get_addresse_by_name(db, 'A Thaon Tifs'))}'
-      | A Thaon Tifs
-    |  à Thaon (Calvados) réalise un jeu de mot animalier. D'autres, encore en activité aiment aussi les animaux:
+    | Une liste de blagues à caractère animalier:
     ul
 """
   [
