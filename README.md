@@ -83,8 +83,9 @@ Puis faire une passe de résolution adresse => coordonnées GPS, et déduplicati
 ruby tools/coords.rb coiffeurs.sqlite
 ruby tools/main.rb coiffeurs.sqlite
 ```
-```
 
 ## Contactez moi
 
-Ouvrez une issue sur Github :)
+Un email, à une adresse qui commencerait par 'contact', avec un @ au milieu, et finirait par le nom du site web.
+
+Ou ouvrez une issue sur Github :)
