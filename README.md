@@ -11,11 +11,18 @@ Outils utilisés pour générer le site [Tif'Hair](https://tif.hair).
 
 Télécherger les deux fichiers [StockEtablissement_utf8.zip](https://files.data.gouv.fr/insee-sirene/StockEtablissement_utf8.zip) et [StockUniteLegale_utf8.zip](https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip), qui se trouvent sur [https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/](https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/) 
 
-Une fois décompressés, lancer l'extraction (c'est long, la lib CSV de ruby n'est pas des plus efficaces, normalement moins d'une heure):
+Une fois décompressés, faire une première passe pour filtrer les lignes interessantes:
 
 ```
-{ head -n1 StockEtablissement_utf8.csv & grep 96.02A StockEtablissement_utf8.csv; } > coiffeurs.csv
-ruby tools/sirene.rb coiffeurs.csv StockUniteLegale_utf8.csv
+{ head -n 1 StockEtablissement_utf8.csv  & grep "96.02A" StockEtablissement_utf8.csv ; } > SE.csv
+{ head -n 1 StockUniteLegale_utf8.csv  & grep "96.02A" StockUniteLegale_utf8.csv ; } > SUL.csv
+
+```
+
+lancer l'extraction (c'est long, la lib CSV de ruby n'est pas des plus efficaces, normalement moins d'une heure):
+
+```
+ruby sirene.rb /tmp/SE.csv /tmp/SUL.csv
 ```
 
 Puis faire une passe de résolution adresse => coordonnées GPS (qui prendra probablement encore environ 1h):
@@ -41,6 +48,41 @@ Générez ensuite le site dans le répertoire `build` avec:
 
 ```
 ruby tools/statify.rb src build
+```
+
+Enfin, parceque de nombreux doublons peuvent exister (Plusieurs enseignes aux mêmes coordonnées GPS) pour plusieurs raisons:
+  * Changement de SIRET pour un établissement, mais conservation d'un nom rigolo
+  * Plusieurs noms rigolos enregistrés pour un établissement
+  * etc.
+il faut également lancer un script qui vous demandera de choisir quel nom afficher en cas de double:
+
+```
+ruby tools/main.rb coiffeurs.sqlite
+```
+
+Exemple de doublon:
+```
+[0]RECRE A TIFS(39888921200013), [1]BELL'HAIR COIFFURE(53227002200017)	http://www.google.com/maps/place/49.125478,-0.209758
+```
+
+Accéder au lien Google Maps pour voir la deventure montre qu'il s'agit bien d'un "BELL'HAIR".
+
+### Mettre à jour une base existante
+
+Récupérez les fichiers `SE.csv` et `SUL.csv` comme précédemment, pour générer une nouvelle base coiffeurs.sqlite avec le script `sirene.rb`.
+
+Puis l'outil suivant va d'abord faire un backup de `old_coiffeurs.sqlite` pour ensuite y ajouter les éléments de la nouvelle base, puis demander si les nouveaux noms trouvés sont drôles ou pas.
+
+```
+ruby tools compare.rb <old_coiffeurs.sqlite> <new_coiffeurs.sqlite>
+```
+
+Puis faire une passe de résolution adresse => coordonnées GPS, et déduplication:
+
+```
+ruby tools/coords.rb coiffeurs.sqlite
+ruby tools/main.rb coiffeurs.sqlite
+```
 ```
 
 ## Contactez moi
