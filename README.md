@@ -42,15 +42,10 @@ Ensuite il faut indiquer quels noms sont "droles":
 ```
 ruby tools/blague.rb coiffeurs.sqlite 
 ```
+
 Le script marquera certains "classiques" comme "droles", mais pour la grande majorité, il faudra indiquer si le nom est comique (en appuyant sur entrée) ou non (en appuyant sur qq touches au pif + entrée)
 
-Générez ensuite le site dans le répertoire `build` avec:
-
-```
-ruby tools/statify.rb src build
-```
-
-Enfin, parceque de nombreux doublons peuvent exister (Plusieurs enseignes aux mêmes coordonnées GPS) pour plusieurs raisons:
+Puis, parceque de nombreux doublons peuvent exister (Plusieurs enseignes aux mêmes coordonnées GPS) pour plusieurs raisons:
   * Changement de SIRET pour un établissement, mais conservation d'un nom rigolo
   * Plusieurs noms rigolos enregistrés pour un établissement
   * etc.
@@ -66,6 +61,13 @@ Exemple de doublon:
 ```
 
 Accéder au lien Google Maps pour voir la deventure montre qu'il s'agit bien d'un "BELL'HAIR".
+
+Générez ensuite le site dans le répertoire `build` avec:
+
+```
+ruby tools/statify.rb src build
+```
+
 
 ### Mettre à jour une base existante
 
