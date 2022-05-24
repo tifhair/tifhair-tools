@@ -68,7 +68,7 @@ end
 def check_coords_in_depts(db)
 
   depts = load_depts(File.join(File.expand_path(File.dirname(__FILE__)), "../src/geojson//departements-avec-outre-mer.geojson"))
-  db.execute("SELECT c.lat, c.lng, c.codepostal, c.siret, n.name from Coiffeurs as c, Names as n WHERE c.etat='A' AND c.siret=n.siret ").each do |r|
+  db.execute("SELECT c.lat, c.lng, c.codepostal, c.siret, n.name from Coiffeurs as c, Names as n WHERE c.etat='A' AND c.siret=n.siret AND blague = 1").each do |r|
     next unless r['lat']
     next unless r['codepostal']
     cp = r['codepostal'][0..1]
@@ -89,6 +89,11 @@ def check_coords_in_depts(db)
         #puts "#{r['name']} est à saint-marin (97150)"
       when "97133"
         # puts "#{r['name']} est à saint-Barthélémy (97133)"
+      when "97400"
+        if not r['siret'] == "31539771100039" # pas réussi à vérifier avec gmaps
+          raise Exception.new("#{r['name']} (#{r['siret']} not in #{r['codepostal']} ")
+        end
+
 
       when "40220"
         if not r['siret'] == "48460978900017" # très proche de la frontière 
