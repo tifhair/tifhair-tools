@@ -183,7 +183,7 @@ function showCoiffeursGeoJSON(data) {
                     }
                 }
             }
-            if (nom.toLowerCase().includes(filter_name.toLowerCase())) {
+            if (nom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(filter_name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
                 if (dept == "*") {
                     if (filter_ville == "") {
                         liste.appendChild(li);
