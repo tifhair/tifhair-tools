@@ -62,6 +62,12 @@ Exemple de doublon:
 
 Accéder au lien Google Maps pour voir la deventure montre qu'il s'agit bien d'un "BELL'HAIR".
 
+Une passe supplémentaire qui tentera de détecter des anomalies (par exemple des coordonnées GPS hors de la zone d'un département)
+
+```
+ruby tools/anomalies.rb coiffeurs.sqlite
+```
+
 Générez ensuite le site dans le répertoire `build` avec:
 
 ```
@@ -84,6 +90,7 @@ Puis faire une passe de résolution adresse => coordonnées GPS, et déduplicati
 ```
 ruby tools/coords.rb coiffeurs.sqlite
 ruby tools/main.rb coiffeurs.sqlite
+ruby tools/anomalies.rb coiffeurs.sqlite
 ```
 
 ## Contactez moi
