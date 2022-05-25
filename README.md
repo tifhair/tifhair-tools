@@ -95,6 +95,6 @@ ruby tools/anomalies.rb coiffeurs.sqlite
 
 ## Contactez moi
 
-Un email, à une adresse qui commencerait par 'contact', avec un @ au milieu, et finirait par le nom du site web.
+Un email, à une adresse qui commencerait par 'contact', avec un @ au milieu, et finirait par le nom du site web. En revanche, si vous espérez une réponse de ma part, un DM Twitter sur @tif_hair ou une issue ouverte ici auront plus de succès.
 
 Ou ouvrez une issue sur Github :)
