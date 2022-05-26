@@ -6,3 +6,4 @@ build
 src/stats.slim
 .data_gouv_key
 backups
+medias
