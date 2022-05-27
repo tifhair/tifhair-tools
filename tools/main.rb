@@ -22,6 +22,7 @@ res.each do |x|
   siret, lat, lng, name, main = x
   (all_doubles[[lat, lng]] ||= [])  << x
 end
+
 todo = all_doubles.select{|k,v| v.size >1}.select{|k,v| not (v.map{|p| p[4]}).include?(0)}
 puts "to do: #{todo.size}"
 todo.each do |k,v|
@@ -38,9 +39,9 @@ todo.each do |k,v|
   i=0
   v.each do |l|
     if i == nb
-      db.execute("UPDATE Names set main=1 WHERE siret=? and name=?", v[nb][0], v[nb][3])
+      db.execute("UPDATE Names set main=1 WHERE siret=? and name=?", l[0], l[3])
     else
-      db.execute("UPDATE Names set main=0 WHERE siret=? and name=?", v[nb][0], v[nb][3])
+      db.execute("UPDATE Names set main=0 WHERE siret=? and name=?", l[0], l[3])
     end
     i+=1
   end
