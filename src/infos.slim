@@ -46,7 +46,7 @@ div class="about"
   h3
     | Méthodologie
   p
-    | Pour la sélection des noms à blague, parmis les 46000+ établissement de la base INSEE, une première passe consiste à sélectionner ceux dont le nom contiennent une de ces chaînes de caractère: 
+    | Pour la sélection des noms à blague, parmis les ~86000 établissement que la base INSEE indique comme étant en activité, une première passe consiste à sélectionner ceux dont le nom contiennent une de ces chaînes de caractère: 
     code
       | hair
     |, 
@@ -58,6 +58,8 @@ div class="about"
     |, 
     code
       | mech
+    code
+      | etc
     |, ce qui réduit le compte à ~5700, puis de manuellement filtrer ceux qui contiennent effectivement un jeu de mots (et éliminer les nombreux "Hair Fashion" et autres "Hair Instituts, etc.), ce qui réduit la liste à ~4000. Ce traitement étant manuel, des oublis ont pu être faits sur les calembours les moins évidents... Pour cette étape, le script 
     code 
       a href="https://github.com/tifhair/tifhair-tools/blob/main/tools/blague.rb"
