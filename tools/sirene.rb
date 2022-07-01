@@ -99,7 +99,7 @@ CSV.foreach(etab_file, headers:true) do |line|
               etat,
               )
     names.each do |nom|
-      trans.execute("INSERT INTO names (id, siret, name, blague) VALUES (NULL, ?, ?, NULL)", siret, nom)
+      trans.execute("INSERT INTO names (id, siret, name, blague, main) VALUES (NULL, ?, ?, NULL, 1)", siret, nom)
     end
   end
 end
