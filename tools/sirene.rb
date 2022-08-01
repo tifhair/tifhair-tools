@@ -6,26 +6,32 @@ require "set"
 STDOUT.sync = true
 $debug=false
 
-dbfile = "coiffeurs.sqlite"
-
 def usage()
-  puts "run sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv"
+  puts "ruby sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv coiffeurs.sqlite"
+  exit 1
 end
 
 etab_file = ARGV[0]
 if not etab_file or not File.exist?(etab_file)
+  puts "Impossible de trouver le fichier des Établissements #{etab_file}"
   usage
-  exit
 end
 
 unite_file = ARGV[1]
 if not unite_file or not File.exist?(unite_file)
+  puts "Impossible de trouver le fichier des Unités légales #{unite_file}"
   usage
-  exit
+end
+
+dbfile = ARGV[2]
+if not dbfile
+  puts "Merci de fournir un fichiers de destination"
+  usage
 end
 
 if File.exist?(dbfile)
-  raise "Le fichier #{dbfile} existe déjà"
+  puts "Le fichier #{dbfile} existe déjà..."
+  exit 1
 end
 
 if not File.exist?(dbfile)

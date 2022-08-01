@@ -22,7 +22,7 @@ Une fois décompressés, faire une première passe pour filtrer les lignes inter
 lancer l'extraction (c'est long, la lib CSV de ruby n'est pas des plus efficaces, normalement moins d'une heure):
 
 ```
-ruby sirene.rb /tmp/SE.csv /tmp/SUL.csv
+ruby sirene.rb /tmp/SE.csv /tmp/SUL.csv /tmp/coiffeurs.sqlite
 ```
 
 Puis faire une passe de résolution adresse => coordonnées GPS (qui prendra probablement encore environ 1h):
