@@ -77,7 +77,7 @@ def add_row(db, row)
       res = is_blague(name, nil, row)
       blague = res ? 1 : 0
     end
-    db.execute("INSERT OR IGNORE INTO Names (id, siret, name, blague ) VALUES (?,?,?,?)",
+    db.execute("INSERT OR IGNORE INTO Names (id, siret, name, blague, main ) VALUES (?,?,?,?, 1)",
               nil,
               row['siret'],
               name,
