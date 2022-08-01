@@ -7,7 +7,7 @@ Outils utilisés pour générer le site [Tif'Hair](https://tif.hair).
 `apt install ruby ruby-geocoder ruby-progressbar`
 
 
-## Utilisation
+## Création de la base de données de coiffeurs
 
 ### Création automatisée de la DB
 
@@ -97,6 +97,13 @@ Puis faire une passe de résolution adresse => coordonnées GPS, et déduplicati
 ruby tools/coords.rb coiffeurs.sqlite
 ruby tools/main.rb coiffeurs.sqlite
 ruby tools/anomalies.rb coiffeurs.sqlite
+```
+
+## Génerer le site
+
+```
+cp coiffeurs.sqlite src/ ; ruby tools/statify.rb src build
+cd build/; python3 -m http.server
 ```
 
 ## Contactez moi
