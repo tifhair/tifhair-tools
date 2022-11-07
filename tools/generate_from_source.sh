@@ -1,4 +1,4 @@
-set -e
+#set -e
 
 TMPDIR="/tmp"
 
@@ -56,5 +56,13 @@ fi
 
 echo "Fini!"
 echo "Le nouveau fichier sqlite est ${NEWDB}"
+
 echo "Si vous mettez à jour par rapport à un fichier précédent, lancez:"
-echo "ruby ${SCRIPT_DIR}/compare.rb <fichier_sqlite_actuel> ${NEWDB}"
+if [[ ! -f "${OLDDB}" ]]; then
+    ruby "${SCRIPT_DIR}/compare.rb" coiffeurs.sqlite "${NEWDB}"
+    ruby "${SCRIPT_DIR}/coords.rb" "${NEWDB}"
+    ruby "${SCRIPT_DIR}/anomalies.rb" "${NEWDB}"
+    ruby "${SCRIPT_DIR}/main.rb" "${NEWDB}"
+else
+    echo "Ancienne base de données ${OLDDB} non présente... exit"
+fi
