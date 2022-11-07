@@ -54,11 +54,9 @@ def is_blague(name, old, new)
   end
 
   if old == nil
-    puts "Nouveau nom #{name} (#{new['ville']}/#{new['codepostal']})"
-    puts "Est-ce que c'est drole ? [y/N]"
+    puts "#{name} (#{new['ville']}/#{new['codepostal']}) Est-ce que c'est drole ? [y/N]"
   else
-    puts "Name change from '#{old["names"].join(' | ')}' to '#{name}' (#{new['ville']}/#{new['codepostal']})"
-    puts "Est-ce que c'est drole maintenant? [y/N]"
+    puts "#{name} (#{new['ville']}/#{new['codepostal']}) was '#{old["names"].join(' | ')}' Est-ce que c'est drole maintenant? [y/N]"
   end
   res = $stdin.gets().strip
 
@@ -124,7 +122,7 @@ def handle_diff(old, new, auto)
       return false if auto
       new["names"].each do |name|
         res = is_blague(name, old, new)
-        $olddb.execute("INSERT OR IGNORE INTO Names (id, siret, name, blague ) VALUES (?,?,?,?)", nil, new['siret'], name, 0)
+        $olddb.execute("INSERT OR IGNORE INTO Names (id, siret, name, blague, main ) VALUES (?,?,?,?,1)", nil, new['siret'], name, 0)
         if res
           $olddb.execute("UPDATE Names SET blague=1 WHERE siret=? AND name=?", siret, name)
         else
