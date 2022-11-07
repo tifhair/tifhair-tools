@@ -20,6 +20,7 @@ var gradients = [
     "#d33d1a",
     "#ce2b14",
     "#c90d0d",
+    "#d90d0d",
 ];
 
 
@@ -75,6 +76,8 @@ function getDeptColor(blag) {
        return gradients[12];
    if (blag < 16)
        return gradients[13];
+   if (blag < 17)
+       return gradients[13];
    return gradients[-1];
 }
 
@@ -100,7 +103,7 @@ function showDeptGeoJSON(data) {
 
 	legend.onAdd = function (map) {
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+			grades = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 			labels = [];
 
 		div.innerHTML+="<p>Pourcentage de blagueurs</p>"
