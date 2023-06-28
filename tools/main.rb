@@ -4,6 +4,11 @@ require "sqlite3"
 $google=false
 
 db_file = ARGV[0]
+$table_name = ARGV[1]
+if not $table_name
+  $table_name = "Coiffeurs"
+end
+
 
 if ARGV.size == 0
   raise "ruby main.rb <coiffeurs.sqlite>"
@@ -15,7 +20,7 @@ end
 
 db = SQLite3::Database.open(db_file)
 
-res = db.execute("select c.siret, c.lat, c.lng, n.name, n.main from Coiffeurs as c, Names as n where c.siret=n.siret and n.blague=1 and c.etat='A' ORDER BY c.siret")
+res = db.execute("select c.siret, c.lat, c.lng, n.name, n.main from #{$table_name} as c, Names as n where c.siret=n.siret and n.blague=1 and c.etat='A' ORDER BY c.siret")
 all_doubles = {}
 
 res.each do |x|

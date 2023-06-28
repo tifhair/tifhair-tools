@@ -6,17 +6,24 @@ require "tempfile"
 
 $google=false
 
-db_file = ARGV[0]
 
 if ARGV.size == 0
-  raise "ruby coords.rb <coiffeurs.sqlite>"
+  raise "ruby coords.rb coiffeurs.sqlite <Coiffeurs>"
 end
+
+db_file = ARGV[0]
+
+$table_name = ARGV[1]
+if not $table_name
+  $table_name = "Coiffeurs"
+end
+
 
 if not File.exist?(db_file)
   raise "#{db_file} does not exist"
 end
 
-if ARGV.size==2
+if ARGV.size==3
   $google=true
   Geocoder.configure(
     lookup: :google,
@@ -36,7 +43,7 @@ def update_with_google(db, row)
     if res.data["plus_code"]
       code = res.data["plus_code"]["global_code"]
     end
-    db.execute('UPDATE Coiffeurs SET lat=?, lng=?, global_code=?  WHERE siret = ?', lat, lng, code, siret)
+    db.execute("UPDATE #{$table_name} SET lat=?, lng=?, global_code=?  WHERE siret = ?", lat, lng, code, siret)
 
   end
 end
@@ -72,16 +79,16 @@ def update_with_gouvfr(db, rows)
   csv = CSV.parse(post("https://api-adresse.data.gouv.fr/search/csv/", file), headers: true)
   csv.each do |row|
     # Some weird string conversion is required for siret, I assume otherwise it's turned into an INTEGER
-    db.execute('UPDATE Coiffeurs SET lat=?, lng=? WHERE siret = ?', row['latitude'], row['longitude'], "#{row['siret']}")
+    db.execute("UPDATE #{$table_name} SET lat=?, lng=? WHERE siret = ?", row['latitude'], row['longitude'], "#{row['siret']}")
   end
 end
 
 $blague_only = ""
 $blague_only = " AND n.blague=1 "
-total = db.execute("SELECT count(*) from Coiffeurs as c, Names as n WHERE c.etat='A' AND c.lat IS NULL #{$blague_only}")[0][0]
+total = db.execute("SELECT count(*) from #{$table_name} as c, Names as n WHERE c.etat='A' AND c.lat IS NULL #{$blague_only}")[0][0]
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
 
-db.execute("SELECT DISTINCT(c.siret), c.numero_rue, c.voie, c.codepostal, c.ville, n.name FROM Coiffeurs as c, Names as n WHERE etat='A' AND lat IS NULL AND c.siret=n.siret #{$blague_only} GROUP BY c.siret").each_slice(10) do |rows|
+db.execute("SELECT DISTINCT(c.siret), c.numero_rue, c.voie, c.codepostal, c.ville, n.name FROM #{$table_name} as c, Names as n WHERE etat='A' AND lat IS NULL AND c.siret=n.siret #{$blague_only} GROUP BY c.siret").each_slice(10) do |rows|
     update_with_gouvfr(db, rows)
     progressbar.progress += rows.length
 end

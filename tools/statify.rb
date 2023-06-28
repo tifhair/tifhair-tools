@@ -9,11 +9,17 @@ Slim::Engine.set_options pretty: true, sort_attrs: false
 
 
 def usage
-  puts "run statify.rb <source_dir> <dest_dir>"
+  puts "run statify.rb <source_dir> <dest_dir> <table_name>"
 end
 
 source_dir = ARGV[0]
 dest_dir = ARGV[1]
+
+$table_name = ARGV[2]
+if not $table_name
+  $table_name = "Coiffeurs"
+end
+
 
 if not source_dir or not File.exist?(source_dir)
   usage
@@ -31,7 +37,7 @@ if not File.directory?(dest_dir)
 end
 
 def db_get_addresse_by_name(db, name)
-  rows = db.execute("SELECT n.name, c.numero_rue, c.voie, c.ville  FROM Coiffeurs as c, Names as n WHERE n.name = ? AND etat='A' AND n.siret=c.siret ORDER BY RANDOM() LIMIT 1", name)
+  rows = db.execute("SELECT n.name, c.numero_rue, c.voie, c.ville  FROM #{$table_name} as c, Names as n WHERE n.name = ? AND etat='A' AND n.siret=c.siret ORDER BY RANDOM() LIMIT 1", name)
   if rows.size==1
     _, num, voie, ville = rows[0]
     addresse = [num, voie, ville].join(' ').strip()
@@ -42,8 +48,8 @@ end
 
 def percent_pays(db_file)
   db = SQLite3::Database.open(db_file)
-  nb_blagues = db.execute("select count(DISTINCT(c.siret)) from coiffeurs as c, names as n where c.siret = n.siret  and n.blague=1 and c.etat='A'")[0][0].to_i
-  nb_coiffeurs = db.execute("select count(DISTINCT(c.siret)) from coiffeurs as c where c.etat='A'")[0][0].to_i
+  nb_blagues = db.execute("select count(DISTINCT(c.siret)) from #{$table_name} as c, names as n where c.siret = n.siret  and n.blague=1 and c.etat='A'")[0][0].to_i
+  nb_coiffeurs = db.execute("select count(DISTINCT(c.siret)) from #{$table_name} as c where c.etat='A'")[0][0].to_i
   return 100.0*nb_blagues/nb_coiffeurs
 end
 
@@ -52,9 +58,9 @@ def make_json(db_file, dest_dir)
   db = SQLite3::Database.open(db_file)
   res = {'data' => {
     "type"=>"FeatureCollection",
-    "name" => "Coiffeurs Blagueurs",
+    "name" => "#{$table_name} Blagueurs",
     "features" => []}}
-  db.execute("SELECT n.name, c.lat, c.lng, c.numero_rue, c.voie, c.ville, c.codepostal  FROM Coiffeurs as c, Names as n WHERE etat = 'A' AND blague=1 AND n.siret=c.siret AND n.main=1 ORDER BY RANDOM()").each do |row|
+  db.execute("SELECT n.name, c.lat, c.lng, c.numero_rue, c.voie, c.ville, c.codepostal  FROM #{$table_name} as c, Names as n WHERE etat = 'A' AND blague=1 AND n.siret=c.siret AND n.main=1 ORDER BY RANDOM()").each do |row|
     nom,lat,lng,num, voie,ville, codepostal = row
     nom = nom.downcase().split.map(&:capitalize).join(' ')
     addresse = [num, voie, ville].join(' ').strip()
@@ -78,7 +84,7 @@ def make_json(db_file, dest_dir)
     }
   end
 
-  json_path = File.join(dest_dir, "coiffeurs.json")
+  json_path = File.join(dest_dir, "#{$table_name.downcase}.json")
   File.open(json_path, 'w') do |f|
     f.write(res.to_json)
   end
@@ -111,7 +117,7 @@ $cached_dept = nil
 
 def load_dept(db)
   depts = %w{971 972 973 976 01 02 03 04 05 06 2A 2B 07 08 09 10 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 974}
-  res = db.execute("SELECT c.codepostal, n.blague FROM Coiffeurs as c, Names as n WHERE etat='A' AND c.siret = n.siret")
+  res = db.execute("SELECT c.codepostal, n.blague FROM #{$table_name} as c, Names as n WHERE etat='A' AND c.siret = n.siret")
   $cached_dept = {}
   res.each do |row|
     next unless row[0]
@@ -166,7 +172,7 @@ def make_dept_geojson(db_file, source, dest)
 end
 
 def db_get_count_pattern(db, pattern)
-  return db.execute("SELECT count(*) from Coiffeurs as c, Names as n WHERE c.etat = 'A' AND n.name LIKE ? AND n.siret=c.siret LIMIT 1", pattern)[0][0]
+  return db.execute("SELECT count(*) from #{$table_name} as c, Names as n WHERE c.etat = 'A' AND n.name LIKE ? AND n.siret=c.siret LIMIT 1", pattern)[0][0]
 end
 
 def build_stats(db_file, slim_file)
@@ -473,7 +479,7 @@ SLIM1
 end
 
 
-db_file = File.join(source_dir, "coiffeurs.sqlite")
+db_file = File.join(source_dir, "#{$table_name.downcase}.sqlite")
 puts "making dept geojson"
 make_dept_geojson(db_file, File.join(source_dir, "geojson", "departements-avec-outre-mer.geojson" ), File.join(dest_dir, "departements.geojson"))
 puts "making geojson"

@@ -10,6 +10,11 @@ STDOUT.sync = true
 
 $groupconcat_sep = '"@@"'
 
+def usage()
+  puts "Usage: ruby compare.rb old_db.sqlite new_db.sqlite"
+  exit 1
+end
+
 old_db = ARGV[0]
 if not old_db or not File.exist?(old_db)
   usage

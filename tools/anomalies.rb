@@ -1,11 +1,18 @@
 require "sqlite3"
 require "json"
 
-db_file = ARGV[0]
 
 if ARGV.size == 0
   raise "ruby anomalies.rb <coiffeurs.sqlite>"
 end
+
+$table_name = ARGV[1]
+if not $table_name
+  $table_name = "Coiffeurs"
+end
+
+
+db_file = ARGV[0]
 
 if not File.exist?(db_file)
   raise "#{db_file} does not exist"
@@ -68,7 +75,7 @@ end
 def check_coords_in_depts(db)
 
   depts = load_depts(File.join(File.expand_path(File.dirname(__FILE__)), "../src/geojson//departements-avec-outre-mer.geojson"))
-  db.execute("SELECT c.lat, c.lng, c.codepostal, c.siret, n.name from Coiffeurs as c, Names as n WHERE c.etat='A' AND c.siret=n.siret AND blague = 1").each do |r|
+  db.execute("SELECT c.lat, c.lng, c.codepostal, c.siret, n.name, c.numero_rue, c.voie, c.ville from #{$table_name} as c, Names as n WHERE c.etat='A' AND c.siret=n.siret AND blague = 1").each do |r|
     next unless r['lat']
     next unless r['codepostal']
     cp = r['codepostal'][0..1]
@@ -105,6 +112,7 @@ def check_coords_in_depts(db)
           raise Exception.new("#{r['name']} (#{r['siret']} not in #{r['codepostal']} ")
         end
       else
+        puts "#{r['name']} (#{r['siret']} not in #{r['codepostal']}: #{r['lat']} #{r['lng']} #{r['numero_rue']} #{r['voie']} #{r['ville']}"
         raise Exception.new("#{r['name']} (#{r['siret']} not in #{r['codepostal']}: #{r['lat']} #{r['lng']} ")
       end
     end

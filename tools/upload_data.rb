@@ -2,7 +2,6 @@ require 'net/http/post/multipart'
 
 data_key_path = ARGV[0]
 dataset = ARGV[1]
-#org = ARGV[2]
 ressource = ARGV[2]
 json_file = ARGV[3]
 

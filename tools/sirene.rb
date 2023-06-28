@@ -7,7 +7,7 @@ STDOUT.sync = true
 $debug=false
 
 def usage()
-  puts "ruby sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv coiffeurs.sqlite"
+  puts "ruby sirene.rb StockEtablissement_utf8.csv StockUniteLegale_utf8.csv coiffeurs.sqlite <code_naf> <table name>"
   exit 1
 end
 
@@ -29,6 +29,17 @@ if not dbfile
   usage
 end
 
+code_naf = ARGV[3]
+if not code_naf
+  code_naf = "96.02A"
+end
+
+table_name = ARGV[4]
+if not table_name
+  table_name = "Coiffeurs"
+end
+
+
 if File.exist?(dbfile)
   puts "Le fichier #{dbfile} existe déjà..."
   exit 1
@@ -37,7 +48,8 @@ end
 if not File.exist?(dbfile)
   db = SQLite3::Database.open(dbfile)
   db.transaction
-  db.execute "CREATE TABLE Coiffeurs(siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT);"
+  puts "CREATE TABLE #{table_name} (siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT);"
+  db.execute "CREATE TABLE #{table_name} (siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT);"
   db.execute "CREATE TABLE Names(id INTEGER PRIMARY KEY, siret TEXT, name TEXT, blague BOOL, seen BOOL DEFAULT 0, main BOOL DEFAULT 1, commentaire TEXT, UNIQUE(siret, name));"
   db.commit
   db.close()
@@ -59,7 +71,7 @@ CSV.foreach(unite_file, headers:true) do |l|
     progressbar.progress += 10000 if i%10000 ==0
   rescue
   end
-  next if l['activitePrincipaleUniteLegale'] != "96.02A"
+  next if l['activitePrincipaleUniteLegale'] != code_naf
   noms = [l['denominationUniteLegale'],  l['denominationUsuelle1UniteLegale'], l['denominationUsuelle2UniteLegale'], l['denominationUsuelle3UniteLegale']]
   siren = l['siren']
   extra_names[siren] = noms
@@ -79,7 +91,7 @@ CSV.foreach(etab_file, headers:true) do |line|
   end
   activite = line["activitePrincipaleEtablissement"]
   next unless activite
-  next unless activite.start_with?("96.02A")
+  next unless activite.start_with?(code_naf)
   names = [line["enseigne1Etablissement"], line["enseigne2Etablissement"], line["enseigne3Etablissement"], line["denominationUsuelleEtablissement"]].compact
   siret = line["siret"]
   extras = extra_names[siret[0..8]]
@@ -94,7 +106,7 @@ CSV.foreach(etab_file, headers:true) do |line|
   rue = line['libelleVoieEtablissement']
   etat = line['etatAdministratifEtablissement']
   db.transaction do |trans|
-    trans.execute("INSERT INTO Coiffeurs (siret, siren, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?)",
+    trans.execute("INSERT INTO #{table_name} (siret, siren, date, codepostal, ville, numero_rue, voie, etat) VALUES (?,?,?,?,?,?,?,?)",
               siret,
               siret[0..8],
               date_creation,

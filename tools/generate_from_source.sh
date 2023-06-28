@@ -2,6 +2,15 @@
 
 TMPDIR="/tmp"
 
+CODENAF="96.02A" # Coiffeurs
+DBNAME='coiffeurs.sqlite'
+TABLENAME="Coiffeurs"
+
+#CODENAF="47.22" # Bouchers
+#TABLENAME="Bouchers"
+#DBNAME='bouchers.sqlite'
+
+
 echo "On travaille dans ${TMPDIR}"
 
 SEZIP="${TMPDIR}/StockEtablissement_utf8.zip"
@@ -13,7 +22,8 @@ SULCSV="${TMPDIR}/StockUniteLegale_utf8.csv"
 SECSV_OUT="${TMPDIR}/BSE.csv"
 SULCSV_OUT="${TMPDIR}/BSUL.csv"
 
-NEWDB="${TMPDIR}/coiffeurs.sqlite"
+NEWDB="${TMPDIR}/${DBNAME}"
+OLDDB="${DBNAME}"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
@@ -34,35 +44,33 @@ fi
 
 if [[ ! -f "${SECSV_OUT}" ]]; then
     echo "Extraction des lignes intéressantes du fichiers ${SECSV}"
-    { head -n 1 "${SECSV}"  & grep "96.02A" "${SECSV}" ; } > "${SECSV_OUT}"
+    { head -n 1 "${SECSV}"  & grep "${CODENAF}" "${SECSV}" ; } > "${SECSV_OUT}"
 else
     echo "Fichier ${SECSV_OUT} déjà présent..."
 fi
 if [[ ! -f "${SULCSV_OUT}" ]]; then
     echo "Extraction des lignes intéressantes du fichiers ${SULCSV}"
-    { head -n 1 "${SULCSV}"  & grep "96.02A" "${SULCSV}" ; } > "${SULCSV_OUT}"
+    { head -n 1 "${SULCSV}"  & grep "${CODENAF}" "${SULCSV}" ; } > "${SULCSV_OUT}"
 else
     echo "Fichier ${SULCSV_OUT} déjà présent..."
 fi
 
 if [[ ! -f "${NEWDB}" ]]; then
     echo "Création de la nouvelle base de données ${NEWDB}"
-    ruby "${SCRIPT_DIR}/sirene.rb" "${SECSV_OUT}" "${SULCSV_OUT}" "${NEWDB}"
-    ruby "${SCRIPT_DIR}/coords.rb" "${NEWDB}"
-    ruby "${SCRIPT_DIR}/main.rb" "${NEWDB}"
+    ruby "${SCRIPT_DIR}/sirene.rb" "${SECSV_OUT}" "${SULCSV_OUT}" "${NEWDB}" "${CODENAF}" "${TABLENAME}"
 else
     echo "Base de données ${NEWDB} déjà présente..."
 fi
 
-echo "Fini!"
-echo "Le nouveau fichier sqlite est ${NEWDB}"
-
-echo "Si vous mettez à jour par rapport à un fichier précédent, lancez:"
-if [[ ! -f "${OLDDB}" ]]; then
-    ruby "${SCRIPT_DIR}/compare.rb" coiffeurs.sqlite "${NEWDB}"
-    ruby "${SCRIPT_DIR}/coords.rb" "${NEWDB}"
-    ruby "${SCRIPT_DIR}/anomalies.rb" "${NEWDB}"
-    ruby "${SCRIPT_DIR}/main.rb" "${NEWDB}"
+if [[ -f "${OLDDB}" ]]; then
+    ruby "${SCRIPT_DIR}/compare.rb" "${OLDDB}" "${NEWDB}"
 else
+    ruby "${SCRIPT_DIR}/blague.rb" --db="${NEWDB}" --bad=bad --good=good --table="${TABLENAME}"
     echo "Ancienne base de données ${OLDDB} non présente... exit"
 fi
+ruby "${SCRIPT_DIR}/coords.rb" "${OLDDB}"
+ruby "${SCRIPT_DIR}/anomalies.rb" "${OLDDB}"
+ruby "${SCRIPT_DIR}/main.rb" "${OLDDB}"
+
+echo "Fini!"
+echo "Le nouveau fichier sqlite est ${NEWDB}"
