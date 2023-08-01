@@ -84,10 +84,10 @@ def check_coords_in_depts(db)
     end
 
     next if cp == '975' # St Pierre et Miquelon
+    next if cp == "[N" # diffusion restreinte
 
     if not depts[cp]
       raise Exception.new("Unknown cp #{cp}")
-      exit
     end
 
     if not point_in_dept(r["lng"].to_f, r["lat"].to_f, depts[cp]) 
