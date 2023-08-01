@@ -181,13 +181,21 @@ end
   else
     puts "Deuxieme passe, on verifie les noms"
   end
-  puts "loading into memory"
+  puts "loading into memory all names from new DB"
   $select_all_new = "SELECT c.siret as siret, c.siren as siren, c.date as date, c.codepostal as codepostal, c.ville as ville, c.numero_rue as numero_rue, c.voie as voie, c.lat as lat, c.lng as lng, c.global_code as global_code, c.etat as etat, GROUP_CONCAT(n.name, '#{$groupconcat_sep}') as names, n.blague as blague, n.seen as seen FROM Coiffeurs as c, Names as n WHERE c.siret = n.siret AND n.seen=0 GROUP BY c.siret"
   new_list = $newdb.execute($select_all_new)
 
 
+  puts "loading into memory all names from old DB"
   $select_all_old = "SELECT c.siret as siret, c.siren as siren, c.date as date, c.codepostal as codepostal, c.ville as ville, c.numero_rue as numero_rue, c.voie as voie, c.lat as lat, c.lng as lng, c.global_code as global_code, c.etat as etat, GROUP_CONCAT(n.name, '#{$groupconcat_sep}') as names, n.blague as blague, n.seen as seen FROM Coiffeurs as c, Names as n WHERE c.siret = n.siret GROUP BY c.siret"
   old_list = $olddb.execute($select_all_old)
+
+  if new_list.size == 0
+    raise Exception.new("new_list (From #{new_db}) size is empty")
+  end
+  if old_list.size == 0
+    raise Exception.new("old_list (from #{old_db}) size is empty")
+  end
 
   new_list.each do |new|
     new["names"] = new["names"].split($groupconcat_sep).sort
@@ -202,6 +210,7 @@ end
 
   done = 0
   progressbar = ProgressBar.create(total: new_list.size, format: '%a %e %P% Processed: %c from %C')
+  puts "Updating new DB with info from the old one #{auto ? 'first pass, only work on known stuff': "second pass, will ask for whether the new #{new_list.size} names are fun"}"
   new_list.each do |n|
     progressbar.progress += 50 if done>0 and done%50 == 0
     siret = n["siret"]

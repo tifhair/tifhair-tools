@@ -71,6 +71,14 @@ CSV.foreach(unite_file, headers:true) do |l|
     progressbar.progress += 10000 if i%10000 ==0
   rescue
   end
+
+  case l['statutDiffusionUniteLegale']
+  when 'O'
+  when 'P'
+    next
+  else
+    raise "Unexpected statutDiffusionUniteLegale: #{l['statutDiffusionUniteLegale']}"
+  end
   next if l['activitePrincipaleUniteLegale'] != code_naf
   noms = [l['denominationUniteLegale'],  l['denominationUsuelle1UniteLegale'], l['denominationUsuelle2UniteLegale'], l['denominationUsuelle3UniteLegale']]
   siren = l['siren']
@@ -82,7 +90,7 @@ $stderr.puts "Loading main SIRENE database from from #{etab_file} 2/2"
 $stderr.puts "calculating number of lines to parse"
 total = `wc -l "#{etab_file}"  | cut -d " " -f 1`.strip().to_i()
 progressbar = ProgressBar.create(total: total, format: '%a %e %P% Processed: %c from %C')
-
+nb_inserted = 0
 CSV.foreach(etab_file, headers:true) do |line|
   i+=1
   begin
@@ -118,8 +126,13 @@ CSV.foreach(etab_file, headers:true) do |line|
               )
     names.each do |nom|
       trans.execute("INSERT INTO names (id, siret, name, blague, main) VALUES (NULL, ?, ?, NULL, 1)", siret, nom)
+      nb_inserted+=1
     end
   end
 end
 
 progressbar.finish
+
+if nb_inserted == 0
+  raise Exception.new("No name added from #{etab_file} ????")
+end

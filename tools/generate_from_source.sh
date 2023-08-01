@@ -1,4 +1,4 @@
-#set -e
+set -e
 
 TMPDIR="/tmp"
 
@@ -68,8 +68,11 @@ else
     ruby "${SCRIPT_DIR}/blague.rb" --db="${NEWDB}" --bad=bad --good=good --table="${TABLENAME}"
     echo "Ancienne base de données ${OLDDB} non présente... exit"
 fi
+echo Running ruby "${SCRIPT_DIR}/coords.rb" "${OLDDB}"
 ruby "${SCRIPT_DIR}/coords.rb" "${OLDDB}"
+echo Running ruby "${SCRIPT_DIR}/anomalies.rb" "${OLDDB}"
 ruby "${SCRIPT_DIR}/anomalies.rb" "${OLDDB}"
+echo Running ruby "${SCRIPT_DIR}/main.rb" "${OLDDB}"
 ruby "${SCRIPT_DIR}/main.rb" "${OLDDB}"
 
 echo "Fini!"
