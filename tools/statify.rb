@@ -470,6 +470,8 @@ SLIM1
         | 'Culin'hair'
       li
         | 'James Blonde'
+      li
+        | 'Hair mione'
 """
 
   File.open(slim_file, 'w') do |f|
