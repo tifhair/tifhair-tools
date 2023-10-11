@@ -183,11 +183,11 @@ aside{
         font-size: 0.8rem;
     }
 
-    section#mapid {
+    div#mapid {
         grid-column: span 2;
     }
     
-    section#asideresults {
+    aside#asideresults {
         overflow: scroll;
         grid-column: span 2;
         height: 400px;
