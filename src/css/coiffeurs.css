@@ -8,7 +8,7 @@ html {
     padding-bottom: 200px;
     background: #f2f2f0 url(/pics/bg.jpg) fixed no-repeat bottom center / cover;
 }
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     html{
         text-align: justify;
     }
@@ -150,7 +150,7 @@ aside{
     overflow: scroll;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     body {
         padding-top: 3.5rem;
     }
@@ -175,15 +175,22 @@ aside{
         width: 100%;
     }
 
-    aside#asideresults {
-        overflow: hidden;
-    }
     #listecoiffeurs li span {
         display:none;
     }
     #listecoiffeurs li b{
         font-weight: 600;
         font-size: 0.8rem;
+    }
+
+    div#mapid {
+        grid-column: span 2;
+    }
+    
+    aside#asideresults {
+        overflow: scroll;
+        grid-column: span 2;
+        height: 400px;
     }
 }
 
@@ -234,13 +241,13 @@ a.button:hover{
     color: #777;
 }
 
-@media(max-width: 768px) {
+@media(max-width: 900px) {
     .info h4 {
         font: 12px Arial, Helvetica, sans-serif;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     .about, .palmares {
         column-count:  2;
         column-gap: 3rem;
