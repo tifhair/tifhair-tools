@@ -41,10 +41,21 @@ div class="about"
     |. La première base contient l'intégralité des entreprises et établissements. Toutefois certains noms d'établissements n'y apparaissent pas et la deuxième base est nécessaire pour en trouver des informations plus récentes.
 
   p
-    | Malgré tout ceci, il semble que beaucoup de différences existent entre les bases INSEE et la "réalité" (telle que par exemple Google Maps permet d'explorer). Soit parce que les établissements ont fermé ou changé de nom depuis la date d'export de la base (1er août 2021), soit parce que certaines entreprises déclarées sont domiciliées dans une zone résidentielle, sans réel établissement (par exemple: les coiffeurs à domicile).
+    | Malgré tout ceci, il semble que beaucoup de différences existent entre les bases INSEE et la "réalité" (telle que par exemple Google Maps permet d'explorer). Soit parce que les établissements ont fermé ou changé de nom depuis la date d'export de la base utilisée pour les résultats affichés, soit parce que certaines entreprises déclarées sont domiciliées dans une zone résidentielle, sans réel établissement (par exemple: les coiffeurs à domicile). Il me semble également que rien n'oblige un établissement de s'être enregistré auprès des services gouvernementaux avec un nom très basique, mais d'avoir ensuite eu une idée génialement drôle lors de la commande de l'enseigne physique à afficher au dessus de la porte d'entrée du salon.
+  p
+    | Un autre problème avec la source de données est que toutes les chaînes de caractère sont en majuscule et ignorent les accents et autres caractères non ASCII. De plus, il est possible aux gérants des salons de s'inscrire sur une liste qui limite la diffusion de leurs information dans les bases publiques.
 
   h3
     | Méthodologie
+  p
+    | Je n'ai cherché à sélectionner que les noms "contenant des blagues" en rapport avec le champs lexical de la coiffure. Par exemple, 
+    b
+      | L'ART D'ETRE SOI M'AIME 
+    | ne sera pas dans la liste. Je n'inscrit généralement pas non plus ce que j'appelle des "Orthographes Innovantes". Comme par example 
+    b
+      | SALON DE KWAFURE
+    | , ou autres rajouts excessifs d'apostrophes dans des mots.
+
   p
     | Pour la sélection des noms à blague, parmis les ~86000 établissement que la base INSEE indique comme étant en activité, une première passe consiste à sélectionner ceux dont le nom contiennent une de ces chaînes de caractère: 
     code
