@@ -26,8 +26,10 @@ NEWDB="${TMPDIR}/${DBNAME}"
 OLDDB="${DBNAME}"
 
 OLDDB_BACKUP="old/${OLDDB}-$(date +%Y%m%d)"
-if [ ! -f ${OLDDB_BACKUP}]; then
-  cp "${OLDDB}" "old/${OLDDB}-$(date +%Y%m%d)"
+if [ ! -f ${OLDDB_BACKUP} ]; then
+    if [ -f ${OLDDB} ]; then
+      cp "${OLDDB}" "old/${OLDDB}-$(date +%Y%m%d)"
+    fi
 fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
