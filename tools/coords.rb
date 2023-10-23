@@ -38,8 +38,8 @@ def update_with_google(db, row)
   address = [a,b,c,d].join(' ').strip
   res = Geocoder.search(address)[0]
   if res
-    lat = res.data["geometry"]["location"]["lat"]
-    lng = res.data["geometry"]["location"]["lng"]
+    lat = res.data["geometry"]["location"]["lat"].to_f
+    lng = res.data["geometry"]["location"]["lng"].to_f
     if res.data["plus_code"]
       code = res.data["plus_code"]["global_code"]
     end
@@ -79,7 +79,7 @@ def update_with_gouvfr(db, rows)
   csv = CSV.parse(post("https://api-adresse.data.gouv.fr/search/csv/", file), headers: true)
   csv.each do |row|
     # Some weird string conversion is required for siret, I assume otherwise it's turned into an INTEGER
-    db.execute("UPDATE #{$table_name} SET lat=?, lng=? WHERE siret = ?", row['latitude'], row['longitude'], "#{row['siret']}")
+    db.execute("UPDATE #{$table_name} SET lat=?, lng=? WHERE siret = ?", row['latitude'].to_f, row['longitude'].to_f, "#{row['siret']}")
   end
 end
 
