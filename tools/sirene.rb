@@ -48,9 +48,9 @@ end
 if not File.exist?(dbfile)
   db = SQLite3::Database.open(dbfile)
   db.transaction
-  puts "CREATE TABLE #{table_name} (siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT) STRICT;"
-  db.execute "CREATE TABLE #{table_name} (siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date DATE, codepostal TEXT, active BOOL, ville text, numero_rue text, voie text, lat FLOAT, lng FLOAT, global_code TEXT, etat TEXT) STRICT;"
-  db.execute "CREATE TABLE Names(id INTEGER PRIMARY KEY, siret TEXT, name TEXT, blague BOOL, seen BOOL DEFAULT 0, main BOOL DEFAULT 1, commentaire TEXT, UNIQUE(siret, name)) STRICT;"
+  puts "CREATE TABLE #{table_name} (siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date TEXT, codepostal TEXT, active INTEGER, ville text, numero_rue text, voie text, lat REAL, lng REAL, global_code TEXT, etat TEXT) STRICT;"
+  db.execute "CREATE TABLE #{table_name} (siret TEXT UNIQUE PRIMARY KEY, siren TEXT, name TEXT, date TEXT, codepostal TEXT, active INTEGER, ville text, numero_rue text, voie text, lat REAL, lng REAL, global_code TEXT, etat TEXT) STRICT;"
+  db.execute "CREATE TABLE Names(id INTEGER PRIMARY KEY, siret TEXT, name TEXT, blague INTEGER, seen INTEGER DEFAULT 0, main INTEGER DEFAULT 1, commentaire TEXT, UNIQUE(siret, name)) STRICT;"
   db.commit
   db.close()
 end
