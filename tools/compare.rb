@@ -185,14 +185,14 @@ end
   $select_all_new = "SELECT c.siret as siret, c.siren as siren, c.date as date, c.codepostal as codepostal, c.ville as ville, c.numero_rue as numero_rue, c.voie as voie, c.lat as lat, c.lng as lng, c.global_code as global_code, c.etat as etat, GROUP_CONCAT(n.name, '#{$groupconcat_sep}') as names, n.blague as blague, n.seen as seen FROM Coiffeurs as c, Names as n WHERE c.siret = n.siret AND n.seen=0 GROUP BY c.siret"
   new_list = $newdb.execute($select_all_new)
 
+  if new_list.size == 0
+    raise Exception.new("new_list (From #{new_db}) size is empty")
+  end
 
   puts "loading into memory all names from old DB"
   $select_all_old = "SELECT c.siret as siret, c.siren as siren, c.date as date, c.codepostal as codepostal, c.ville as ville, c.numero_rue as numero_rue, c.voie as voie, c.lat as lat, c.lng as lng, c.global_code as global_code, c.etat as etat, GROUP_CONCAT(n.name, '#{$groupconcat_sep}') as names, n.blague as blague, n.seen as seen FROM Coiffeurs as c, Names as n WHERE c.siret = n.siret GROUP BY c.siret"
   old_list = $olddb.execute($select_all_old)
 
-  if new_list.size == 0
-    raise Exception.new("new_list (From #{new_db}) size is empty")
-  end
   if old_list.size == 0
     raise Exception.new("old_list (from #{old_db}) size is empty")
   end
