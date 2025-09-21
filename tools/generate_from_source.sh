@@ -1,6 +1,6 @@
 set -e
 
-TMPDIR="/tmp"
+TMPDIR="/tmp" # TG systemd
 
 CODENAF="96.02A" # Coiffeurs
 DBNAME='coiffeurs.sqlite'
@@ -19,8 +19,8 @@ SULZIP="${TMPDIR}/StockUniteLegale_utf8.zip"
 SECSV="${TMPDIR}/StockEtablissement_utf8.csv"
 SULCSV="${TMPDIR}/StockUniteLegale_utf8.csv"
 
-SECSV_OUT="${TMPDIR}/BSE.csv"
-SULCSV_OUT="${TMPDIR}/BSUL.csv"
+SECSV_OUT="${TMPDIR}/BSE-${CODENAF}.csv"
+SULCSV_OUT="${TMPDIR}/BSUL-${CODENAF}.csv"
 
 NEWDB="${TMPDIR}/${DBNAME}"
 OLDDB="${DBNAME}"
@@ -34,11 +34,12 @@ fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+
 if [[ ! -f "${SEZIP}" ]]; then
-    wget "https://files.data.gouv.fr/insee-sirene/$(basename ${SEZIP})" -O "${SEZIP}"
+    wget "https://object.files.data.gouv.fr/data-pipeline-open/siren/stock/$(basename ${SEZIP})" -O "${SEZIP}"
 fi
 if [[ ! -f "${SULZIP}" ]]; then
-    wget "https://files.data.gouv.fr/insee-sirene/$(basename ${SULZIP})" -O "${SULZIP}"
+    wget "https://object.files.data.gouv.fr/data-pipeline-open/siren/stock/$(basename ${SULZIP})" -O "${SULZIP}"
 fi
 
 echo "De-zip des fichiers si nécessaire"
