@@ -15,7 +15,7 @@ Le script `tools/generate_from_source.sh` automatise la création de la base de 
 
 ### Création de la DB à la main
 
-Télécharger les deux fichiers [StockEtablissement_utf8.zip](https://files.data.gouv.fr/insee-sirene/StockEtablissement_utf8.zip) et [StockUniteLegale_utf8.zip](https://files.data.gouv.fr/insee-sirene/StockUniteLegale_utf8.zip), qui se trouvent sur [https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/](https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/) 
+Télécharger les deux fichiers [StockEtablissement_utf8.zip](https://object.files.data.gouv.fr/data-pipeline-open/siren/stock//StockEtablissement_utf8.zip) et [StockUniteLegale_utf8.zip](https://object.files.data.gouv.fr/data-pipeline-open/siren/stock//StockUniteLegale_utf8.zip), qui se trouvent sur [https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/](https://www.data.gouv.fr/en/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/) 
 
 Une fois décompressés, faire une première passe pour filtrer les lignes interessantes:
 
@@ -108,6 +108,6 @@ cd build/; python3 -m http.server
 
 ## Contactez moi
 
-Un email, à une adresse qui commencerait par 'contact', avec un @ au milieu, et finirait par le nom du site web. En revanche, si vous espérez une réponse de ma part, un DM Twitter sur @tif_hair ou une issue ouverte ici auront plus de succès.
+Un email, à une adresse qui commencerait par 'contact', avec un @ au milieu, et finirait par le nom du site web.
 
-Ou ouvrez une issue sur Github :)
+Ou ouvrez une Issue sur Github :)
