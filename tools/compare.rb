@@ -3,8 +3,6 @@ require "set"
 require "fileutils"
 require "sqlite3"
 require "progressbar"
-require 'ruby-prof'
-require "stackprof"
 
 STDOUT.sync = true
 
@@ -44,6 +42,17 @@ $newdb.results_as_hash = true
 
 $known_lol = Set.new($olddb.execute("SELECT name FROM Names where blague=1").map {|k| k.values[0]}.uniq.sort)
 $known_bad = Set.new($olddb.execute("SELECT name FROM Names where blague=0").map {|k| k.values[0]}.uniq.sort)
+
+if $known_lol.size < 10
+  puts "known_lol is not a lot"
+  puts "kill if not normal, like, unless it's the first time you ever do this"
+  gets
+end
+if $known_bad.size < 10
+  puts "known_bad is not a lot"
+  puts "kill if not normal, like, unless it's the first time you ever do this"
+  gets
+end
 
 def usage()
   puts "ruby compare.rb coiffeurs_orig.sqlite coiffeurs_update.sqlite"
